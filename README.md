@@ -14,11 +14,13 @@
 
 ### Para ejecutar por primera vez utilice los siguientes comandos
 
+### Instalar NextUI (solo la primera vez)
+
 ```bash
 npm install -g nextui-cli
 ```
 
-### Instalar dependencias
+### Instalar dependencias (solo la primera vez)
 
 ```bash
 npm install
