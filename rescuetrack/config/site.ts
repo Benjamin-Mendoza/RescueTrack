@@ -5,24 +5,24 @@ export const siteConfig = {
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {
-      label: "Home",
+      label: "Inicio",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Editar",
+      href: "/pages/editar",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Login",
+      href: "/pages/login",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Registro",
+      href: "/pages/registro",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "Vehículos",
+      href: "/pages/vehiculos",
     },
   ],
   navMenuItems: [
@@ -58,12 +58,5 @@ export const siteConfig = {
       label: "Logout",
       href: "/logout",
     },
-  ],
-  links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui.org",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
-  },
+  ]
 };

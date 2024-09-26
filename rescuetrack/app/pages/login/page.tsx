@@ -7,9 +7,11 @@ import login from '@/app/assets/img/login.png'
 export default function Login() {
   return (
     
-    <div className='text-left font-bold'>
-      <span className='text-red-400'>Rescue</span>Track
     
+    <div className='text-left font-bold'>
+      {/*<div className="row-span-3">
+        <img src={login.src} style={{ display: 'block', margin: '0 auto', maxHeight: '70%'}}/>
+      </div>*/}
     <div className='flex flex-col items-center justify-center h-screen text-left font-bold'>
       <div className="grid grid-rows-3 grid-flow-col gap-4 pt-20 font-[family-name:var(--font-geist-sans)]">
         <div className="row-span-2 col-span-2 flex flex-col gap-4 items-center">
@@ -32,12 +34,6 @@ export default function Login() {
               />
             </div>
           </div>
-
-          <div className="row-span-3">
-        
-        <img src={login.src} style={{ display: 'block', margin: '0 auto', maxHeight: '70%'}}/>
-      
-    </div>
 
           {/* Botones */}
           <div className="flex flex-row items-center">

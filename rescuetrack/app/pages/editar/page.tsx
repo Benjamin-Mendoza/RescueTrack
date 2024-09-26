@@ -6,13 +6,9 @@ import { Button } from "@nextui-org/button";
 export default function App() {
   return (
 
-    <div className='text-left font-bold'>
-      <span className='text-red-400'>Rescue</span>Track
-      
     <div className="grid grid-rows-3 grid-flow-col gap-4 pt-20 font-[family-name:var(--font-geist-sans)]">
-
       <div className="row-span-3">
-        
+
           <img src={carro.src} style={{ display: 'block', margin: '0 auto', maxHeight: '70%'}}/>
         
       </div>
@@ -78,7 +74,6 @@ export default function App() {
             </div>
           </div> 
       </div>
-    </div>
     </div>
   );
 }
