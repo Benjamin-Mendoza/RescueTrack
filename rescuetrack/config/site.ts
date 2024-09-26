@@ -13,10 +13,6 @@ export const siteConfig = {
       href: "/pages/editar",
     },
     {
-      label: "Login",
-      href: "/pages/login",
-    },
-    {
       label: "Registro",
       href: "/pages/registro",
     },

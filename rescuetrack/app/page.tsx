@@ -1,5 +1,7 @@
-export default function Home() {
-  return (
-    <h1>Hola</h1>
-  );
-}
+import Login from '@/app/pages/login/page';
+export default function App() {
+    return (
+   <Login/>
+    );
+  }
+  

@@ -1,0 +1,40 @@
+.c3 {
+    padding: 20px;
+  }
+  
+.c4 {
+    margin-bottom: 20px;
+  }
+  
+.button1 {
+    margin-right: 10px;
+    padding: 10px 20px;
+    background-color: #154780;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+.tabla1 {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+.tabla1 th, .tabla1 td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+.button2{
+    background-color: #154780;
+    color: #ffffff;
+    padding: 5px 10px;
+    margin-left: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: not-allowed;
+}
+
+
+  

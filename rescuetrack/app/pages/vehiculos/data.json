@@ -1,0 +1,26 @@
+[
+    {
+      "tipo": "Carro bomba",
+      "marca": "???",
+      "patente": "XCD12",
+      "estado": "Pendiente"
+    },
+    {
+      "tipo": "Auto de rescate",
+      "marca": "???",
+      "patente": "XCD12",
+      "estado": "Completo"
+    },
+    {
+      "tipo": "HAZMAT",
+      "marca": "???",
+      "patente": "XCD12",
+      "estado": "Pendiente"
+    },
+    {
+      "tipo": "Lancha",
+      "marca": "???",
+      "patente": "XCD12",
+      "estado": "Completo"
+    }
+  ]
