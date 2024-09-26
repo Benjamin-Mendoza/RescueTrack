@@ -1,6 +1,7 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import  login  from '@app/assets/img/login.png'
+import login from '@/app/assets/img/login.png'
+
 
 
 export default function Login() {
@@ -21,11 +22,7 @@ export default function Login() {
                 labelPlacement="outside"
               />
             </div>
-            <div className="row-span-3">
-        
-          <img src={login.src} style={{ display: 'block', margin: '0 auto', maxHeight: '70%'}}/>
-        
-      </div>
+
             <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
               <Input
                 type="password"
@@ -35,6 +32,12 @@ export default function Login() {
               />
             </div>
           </div>
+
+          <div className="row-span-3">
+        
+        <img src={login.src} style={{ display: 'block', margin: '0 auto', maxHeight: '70%'}}/>
+      
+    </div>
 
           {/* Botones */}
           <div className="flex flex-row items-center">
