@@ -1,8 +1,18 @@
+"use client";
+import React from "react";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
+import {MailIcon} from './mailIcon';
+import {EyeFilledIcon} from "./eyeFilledIcon";
+import {EyeSlashFilledIcon} from "./eyeSlashFilledIcon";
 import './login.css';
 
 export default function Login() {
+
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   return (
     <div className="c1">
       <div className="c2">
@@ -14,18 +24,30 @@ export default function Login() {
             <Input
               type="email"
               label="Email"
-              placeholder="Correo"  
+              placeholder=""  
               labelPlacement="outside"
               fullWidth
+              startContent={
+                <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
             />
           </div>
           <div className="input">
             <Input
-              type="password"
               label="Contraseña"
-              placeholder="Contraseña"
+              placeholder="*******"
               labelPlacement="outside"
               fullWidth
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  {isVisible ? (
+                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
             />
           </div>
 

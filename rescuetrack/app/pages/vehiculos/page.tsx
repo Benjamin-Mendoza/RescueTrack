@@ -1,19 +1,24 @@
 "use client";
 import { useState } from 'react';
-import data from '@/app/pages/vehiculos/data.json';
+import data from './data.json';
+import SearchVehiculo from "./searchVehiculo"
 import './vehiculos.css';
 
-export default function Vehiculos() {
+export default function Vehiculos({searchParams,}: {searchParams?:{query?: string;};} ) {
+
+  const query = searchParams?.query|| '';
   const [filtro, setFiltro] = useState('all');
   const filtrado = data.filter(auto => 
     filtro === 'all' || auto.estado === filtro
   );
+
   return (
     <div className="c3">
       <div className="c4">
         <button className="button1" onClick={() => setFiltro('Completo')}>Completo</button>
         <button className="button1" onClick={() => setFiltro('Pendiente')}>Pendiente</button>
         <button className="button1" onClick={() => setFiltro('all')}>Todo</button>
+        <SearchVehiculo />
       </div>
       <table className="tabla1">
         <thead>

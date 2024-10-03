@@ -68,7 +68,7 @@ export default function App() {
               </Button>
             </div>
             <div>
-              <Button radius="full" color="primary">
+              <Button radius="full" className="bg-sky-900 text-white">
                 Guardar
               </Button>
             </div>
