@@ -24,10 +24,10 @@ export default function Login() {
             <Input
               type="email"
               label="Email"
-              placeholder=""  
+              placeholder="Correo"  
               labelPlacement="outside"
               fullWidth
-              startContent={
+              endContent={
                 <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
               }
             />
