@@ -32,4 +32,20 @@ npm install
 npm run dev
 ```
 
+### Pasos para la conexión con la BBDD
 
+1. creo una carpeta de backend
+2. cd .\backend
+2. npm init -y (crea el package.json)
+3. npm install express @supabase/supabase-js cors dotenv
+4. creo el archivo server.js
+______________________________________________________________________________________________________
+
+1. En la carpeta de backend usar 
+```bash
+node server.js
+```
+2. En la carpeta de rescuetrack usar 
+```bash
+npm run dev
+```
