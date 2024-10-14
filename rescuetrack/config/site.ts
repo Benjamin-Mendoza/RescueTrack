@@ -17,6 +17,10 @@ export const siteConfig = {
       href: "/pages/registro",
     },
     {
+      label: "Usuarios",
+      href: "/pages/usuarios",
+    },
+    {
       label: "Vehículos",
       href: "/pages/vehiculos",
     },
