@@ -17,7 +17,7 @@ export default function Login() {
     <div className="c1">
       <div className="c2">
         <h2 className="titulo">Login</h2>
-        <span className='text-red-500 font-bold '>Rescue</span><span className="text-black">Track</span>
+        <span className='text-red-500 font-bold '>Rescue<span className="text-black">Track</span></span>
 
         <div className="form">
           <div className="input">

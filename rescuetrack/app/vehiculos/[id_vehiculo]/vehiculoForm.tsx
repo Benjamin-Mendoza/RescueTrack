@@ -9,6 +9,9 @@ interface Vehiculo {
   marca: string;
   modelo: string;
   anio: number;
+  tipo_vehiculo: string;
+  estado_vehiculo: string;
+  kilometraje: number;
 }
 
 async function updateVehiculo(id_vehiculo: number, updatedData: Partial<Vehiculo>) {
@@ -31,11 +34,14 @@ export default function VehiculoForm({ vehiculo }: { vehiculo: Vehiculo }) {
   const [marca, setMarca] = useState(vehiculo.marca);
   const [modelo, setModelo] = useState(vehiculo.modelo);
   const [anio, setAnio] = useState(vehiculo.anio);
+  const [tipo_vehiculo, setTipo] = useState(vehiculo.tipo_vehiculo);
+  const [estado_vehiculo, setEstado] = useState(vehiculo.estado_vehiculo);
+  const [kilometraje, setKilometraje] = useState(vehiculo.kilometraje);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateVehiculo(vehiculo.id_vehiculo, { marca, modelo, anio });
+      await updateVehiculo(vehiculo.id_vehiculo, { marca, modelo, anio, tipo_vehiculo, estado_vehiculo, kilometraje });
       alert('Vehículo actualizado con éxito');
     } catch (error) {
       console.error(error);
