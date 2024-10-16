@@ -60,12 +60,12 @@ app.get('/vehiculos/:id_vehiculo', async (req, res) => {
 // Editar vehiculo
 app.put('/vehiculos/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
-  const { marca, modelo, anio } = req.body;
+  const { estado_vehiculo, kilometraje } = req.body;
 
   try {
     const { data, error } = await supabase
       .from('vehiculo')
-      .update({ marca, modelo, anio })
+      .update({ estado_vehiculo, kilometraje })
       .eq('id_vehiculo', id_vehiculo);
 
     if (error) {
