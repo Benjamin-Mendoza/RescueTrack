@@ -30,9 +30,28 @@ export default async function VehiculosPage() {
     router.push(`/vehiculos/${id_vehiculo}`);
   };
 
+  const irAAgregarVehiculo = () => {
+    router.push('/nuevo_vehiculo');
+  }
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Lista de Vehículos</h1>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+        <button 
+          style={{
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            padding: '10px 15px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }} 
+          onClick={irAAgregarVehiculo}
+        >
+          Agregar vehículo
+        </button>
+      </div>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ backgroundColor: '#f2f2f2', borderBottom: '2px solid #ddd' }}>
