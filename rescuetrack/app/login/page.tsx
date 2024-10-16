@@ -1,17 +1,53 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import {MailIcon} from './mailIcon';
-import {EyeFilledIcon} from "./eyeFilledIcon";
-import {EyeSlashFilledIcon} from "./eyeSlashFilledIcon";
+import { MailIcon } from './mailIcon';
+import { EyeFilledIcon } from "./eyeFilledIcon";
+import { EyeSlashFilledIcon } from "./eyeSlashFilledIcon";
+import { useRouter } from 'next/navigation';
 import './login.css';
 
 export default function Login() {
-
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const handleLogin = async () => {
+    // Limpiar mensaje de error
+    setErrorMessage('');
+
+    // Realizar la petición al backend
+    try {
+      const response = await fetch('http://localhost:8081/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, contrasenia: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.rol === 'secretario') {
+          // Redirigir al home si el rol es secretario
+          router.push('/home');
+        } else {
+          setErrorMessage('Acceso denegado. Solo los secretarios pueden acceder.');
+        }
+      } else {
+        setErrorMessage(data.error || 'Error en el login');
+      }
+    } catch (error) {
+      setErrorMessage('Error al conectar con el servidor.');
+      console.error('Error en la petición:', error);
+    }
+  };
 
   return (
     <div className="c1">
@@ -20,13 +56,20 @@ export default function Login() {
         <span className='text-red-500 font-bold '>Rescue<span className="text-black">Track</span></span>
 
         <div className="form">
+          {errorMessage && (
+            <p className="error-message" style={{ color: "red", marginBottom: "10px" }}>
+              {errorMessage}
+            </p>
+          )}
           <div className="input">
             <Input
               type="email"
               label="Email"
-              placeholder="Correo"  
+              placeholder="Correo"
               labelPlacement="outside"
               fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               endContent={
                 <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
               }
@@ -38,6 +81,8 @@ export default function Login() {
               placeholder="*******"
               labelPlacement="outside"
               fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
                   {isVisible ? (
@@ -52,7 +97,7 @@ export default function Login() {
           </div>
 
           <div>
-            <Button className="button">
+            <Button className="button" onPress={handleLogin}>
               Login
             </Button>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import './usuario.css'; // Asegúrate de tener este archivo CSS
 
 interface Usuario {
   id_usuario: number;
@@ -48,111 +49,73 @@ export default function UsuarioForm({ usuario }: { usuario: Usuario }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={formStyle}>
-      <h2 style={headerStyle}>Editar Usuario</h2>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Nombre:</label>
-        <input
-          type="text"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Apellido:</label>
-        <input
-          type="text"
-          value={apellido}
-          onChange={(e) => setApellido(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Contraseña:</label>
-        <input
-          type="password"
-          value={contrasenia}
-          onChange={(e) => setContrasenia(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Rol:</label>
-        <input
-          type="text"
-          value={rol}
-          onChange={(e) => setRol(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Compañía:</label>
-        <input
-          type="number"
-          value={compania}
-          onChange={(e) => setCompania(Number(e.target.value))}
-          style={inputStyle}
-        />
-      </div>
-      <button type="submit" style={buttonStyle}>Guardar cambios</button>
-    </form>
+    <div className="c2">
+      <h2 className="titulo">Editar Usuario</h2>
+      <form onSubmit={handleSubmit} className="form">
+        <div className="input-group">
+          <div>
+            <label className="label">Nombre:</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Apellido:</label>
+            <input
+              type="text"
+              value={apellido}
+              onChange={(e) => setApellido(e.target.value)}
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="input-group">
+          <div>
+            <label className="label">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Contraseña:</label>
+            <input
+              type="password"
+              value={contrasenia}
+              onChange={(e) => setContrasenia(e.target.value)}
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="input-group">
+          <div>
+            <label className="label">Rol:</label>
+            <input
+              type="text"
+              value={rol}
+              onChange={(e) => setRol(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Compañía:</label>
+            <input
+              type="number"
+              value={compania}
+              onChange={(e) => setCompania(Number(e.target.value))}
+              className="input"
+            />
+          </div>
+        </div>
+        <button type="submit" className="button">Guardar cambios</button>
+      </form>
+    </div>
   );
 }
 
-// Estilos en línea
-const formStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  maxWidth: '400px',
-  margin: '20px auto',
-  padding: '20px',
-  border: '1px solid #ccc',
-  borderRadius: '5px',
-  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#f9f9f9',
-};
 
-const headerStyle: React.CSSProperties = {
-  marginBottom: '20px',
-  textAlign: 'center',
-  fontSize: '24px',
-  color: '#333',
-};
-
-const inputGroupStyle: React.CSSProperties = {
-  marginBottom: '15px',
-};
-
-const labelStyle: React.CSSProperties = {
-  marginBottom: '5px',
-  fontWeight: 'bold',
-  color: '#555',
-};
-
-const inputStyle: React.CSSProperties = {
-  padding: '10px',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
-  fontSize: '16px',
-};
-
-const buttonStyle: React.CSSProperties = {
-  padding: '10px',
-  backgroundColor: '#28a745',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontSize: '16px',
-  transition: 'background-color 0.3s',
-};

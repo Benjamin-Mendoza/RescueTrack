@@ -1,7 +1,7 @@
-'use client';
-
+"use client";
 import { useState } from 'react';
 import { supabase } from './supabaseClient'; 
+import './registrovehiculo.css';
 
 interface Vehiculo {
   patente: string;
@@ -39,7 +39,7 @@ export default function AgregarVehiculoForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const newVehiculo = {
+      const newVehiculo: Vehiculo = {
         patente,
         marca,
         modelo,
@@ -63,155 +63,112 @@ export default function AgregarVehiculoForm() {
       setKilometraje('');
       setCompania('');
     } catch (error) {
-      console.error(error);
+      console.error('Error al agregar el vehículo:', error);
       alert('Error al agregar el vehículo');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={formStyle}>
-      <h2 style={headerStyle}>Agregar Vehículo</h2>
+    <form onSubmit={handleSubmit} className="form-container">
+      <h2 className="form-header">Agregar Vehículo</h2>
 
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Patente:</label>
-        <input
-          type="text"
-          value={patente}
-          onChange={(e) => setPatente(e.target.value)}
-          style={inputStyle}
-          required
-        />
+      <div className="input-group-row">
+        <div className="input-group">
+          <label className="label">Patente:</label>
+          <input
+            type="text"
+            value={patente}
+            onChange={(e) => setPatente(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label className="label">Marca:</label>
+          <input
+            type="text"
+            value={marca}
+            onChange={(e) => setMarca(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
       </div>
 
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Marca:</label>
-        <input
-          type="text"
-          value={marca}
-          onChange={(e) => setMarca(e.target.value)}
-          style={inputStyle}
-          required
-        />
+      <div className="input-group-row">
+        <div className="input-group">
+          <label className="label">Modelo:</label>
+          <input
+            type="text"
+            value={modelo}
+            onChange={(e) => setModelo(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label className="label">Año:</label>
+          <input
+            type="number"
+            value={anio}
+            onChange={(e) => setAnio(Number(e.target.value))}
+            className="input"
+            required
+          />
+        </div>
       </div>
 
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Modelo:</label>
-        <input
-          type="text"
-          value={modelo}
-          onChange={(e) => setModelo(e.target.value)}
-          style={inputStyle}
-          required
-        />
+      <div className="input-group-row">
+        <div className="input-group">
+          <label className="label">Tipo de Vehículo:</label>
+          <input
+            type="text"
+            value={tipo_vehiculo}
+            onChange={(e) => setTipoVehiculo(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label className="label">Estado del Vehículo:</label>
+          <input
+            type="text"
+            value={estado_vehiculo}
+            onChange={(e) => setEstadoVehiculo(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
       </div>
 
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Año:</label>
-        <input
-          type="number"
-          value={anio}
-          onChange={(e) => setAnio(Number(e.target.value))}
-          style={inputStyle}
-          required
-        />
+      <div className="input-group-row">
+        <div className="input-group">
+          <label className="label">Kilometraje:</label>
+          <input
+            type="number"
+            value={kilometraje}
+            onChange={(e) => setKilometraje(Number(e.target.value))}
+            className="input"
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label className="label">Compañía:</label>
+          <input
+            type="number"
+            value={compania}
+            onChange={(e) => setCompania(Number(e.target.value))}
+            className="input"
+            required
+          />
+        </div>
       </div>
 
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Tipo de Vehículo:</label>
-        <input
-          type="text"
-          value={tipo_vehiculo}
-          onChange={(e) => setTipoVehiculo(e.target.value)}
-          style={inputStyle}
-          required
-        />
-      </div>
-
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Estado del Vehículo:</label>
-        <input
-          type="text"
-          value={estado_vehiculo}
-          onChange={(e) => setEstadoVehiculo(e.target.value)}
-          style={inputStyle}
-          required
-        />
-      </div>
-
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Kilometraje:</label>
-        <input
-          type="number"
-          value={kilometraje}
-          onChange={(e) => setKilometraje(Number(e.target.value))}
-          style={inputStyle}
-          required
-        />
-      </div>
-
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Compañía:</label>
-        <input
-          type="number"
-          value={compania}
-          onChange={(e) => setCompania(Number(e.target.value))}
-          style={inputStyle}
-          required
-        />
-      </div>
-
-      <button type="submit" style={buttonStyle}>Agregar Vehículo</button>
+      <button type="submit" className="button">Agregar Vehículo</button>
     </form>
   );
 }
 
-// Estilos en línea
-const formStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  maxWidth: '400px',
-  margin: '20px auto',
-  padding: '20px',
-  border: '1px solid #ccc',
-  borderRadius: '5px',
-  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#f9f9f9',
-};
-
-const headerStyle: React.CSSProperties = {
-  marginBottom: '20px',
-  textAlign: 'center',
-  fontSize: '24px',
-  color: '#333',
-};
-
-const inputGroupStyle: React.CSSProperties = {
-  marginBottom: '15px',
-};
-
-const labelStyle: React.CSSProperties = {
-  marginBottom: '5px',
-  fontWeight: 'bold',
-  color: '#555',
-};
-
-const inputStyle: React.CSSProperties = {
-  padding: '10px',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
-  fontSize: '16px',
-};
-
-const buttonStyle: React.CSSProperties = {
-  padding: '10px',
-  backgroundColor: '#28a745',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontSize: '16px',
-  transition: 'background-color 0.3s',
-};
 
 
 

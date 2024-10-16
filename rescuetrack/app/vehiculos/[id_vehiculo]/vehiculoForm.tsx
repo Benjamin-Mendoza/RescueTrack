@@ -1,8 +1,7 @@
-// src/app/vehiculos/[id_vehiculo]/VehiculoForm.tsx
-
 'use client';
 
 import { useState } from 'react';
+import './editar.css'; // Asegúrate de tener este archivo CSS
 
 interface Vehiculo {
   id_vehiculo: number;
@@ -50,84 +49,71 @@ export default function VehiculoForm({ vehiculo }: { vehiculo: Vehiculo }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={formStyle}>
-      <h2 style={headerStyle}>Editar Vehículo</h2>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Marca:</label>
-        <input
-          type="text"
-          value={marca}
-          onChange={(e) => setMarca(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Modelo:</label>
-        <input
-          type="text"
-          value={modelo}
-          onChange={(e) => setModelo(e.target.value)}
-          style={inputStyle}
-        />
-      </div>
-      <div style={inputGroupStyle}>
-        <label style={labelStyle}>Año:</label>
-        <input
-          type="number"
-          value={anio}
-          onChange={(e) => setAnio(Number(e.target.value))}
-          style={inputStyle}
-        />
-      </div>
-      <button type="submit" style={buttonStyle}>Guardar cambios</button>
-    </form>
+    <div className="c2">
+      <h2 className="titulo">Editar Vehículo</h2>
+      <form onSubmit={handleSubmit} className="form">
+        <div className="input-group">
+          <div>
+            <label className="label">Marca:</label>
+            <input
+              type="text"
+              value={marca}
+              onChange={(e) => setMarca(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Modelo:</label>
+            <input
+              type="text"
+              value={modelo}
+              onChange={(e) => setModelo(e.target.value)}
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="input-group">
+          <div>
+            <label className="label">Año:</label>
+            <input
+              type="number"
+              value={anio}
+              onChange={(e) => setAnio(Number(e.target.value))}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Tipo de Vehículo:</label>
+            <input
+              type="text"
+              value={tipo_vehiculo}
+              onChange={(e) => setTipo(e.target.value)}
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="input-group">
+          <div>
+            <label className="label">Estado:</label>
+            <input
+              type="text"
+              value={estado_vehiculo}
+              onChange={(e) => setEstado(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Kilometraje:</label>
+            <input
+              type="number"
+              value={kilometraje}
+              onChange={(e) => setKilometraje(Number(e.target.value))}
+              className="input"
+            />
+          </div>
+        </div>
+        <button type="submit" className="button">Guardar cambios</button>
+      </form>
+    </div>
   );
 }
-
-// Estilos en línea
-const formStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  maxWidth: '400px',
-  margin: '20px auto',
-  padding: '20px',
-  border: '1px solid #ccc',
-  borderRadius: '5px',
-  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#f9f9f9',
-};
-
-const headerStyle: React.CSSProperties = {
-  marginBottom: '20px',
-  textAlign: 'center',
-  fontSize: '24px',
-  color: '#333',
-};
-
-const inputGroupStyle: React.CSSProperties = {
-  marginBottom: '15px',
-};
-
-const labelStyle: React.CSSProperties = {
-  marginBottom: '5px',
-  fontWeight: 'bold',
-  color: '#555',
-};
-
-const inputStyle: React.CSSProperties = {
-  padding: '10px',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
-  fontSize: '16px',
-};
-
-const buttonStyle: React.CSSProperties = {
-  padding: '10px',
-  backgroundColor: '#28a745',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontSize: '16px',
-  transition: 'background-color 0.3s',
-};

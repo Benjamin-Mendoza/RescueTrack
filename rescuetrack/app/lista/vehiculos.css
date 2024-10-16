@@ -6,7 +6,7 @@
     margin-bottom: 20px;
   }
   
-.button1 {
+.button {
     margin-right: 10px;
     padding: 10px 20px;
     background-color: #154780;
@@ -35,6 +35,33 @@
     border-radius: 5px;
     cursor: not-allowed;
 }
+
+/* lista.css */
+.filtro-container {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.filtro-label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filtro-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filtro-select:focus {
+  border-color: #154780; /* Cambia el color del borde al enfocar */
+  outline: none; /* Elimina el borde predeterminado */
+}
+
 
 
   

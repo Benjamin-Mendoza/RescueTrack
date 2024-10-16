@@ -10,11 +10,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: 'Usuarios',
-<<<<<<< HEAD
     path: '/usuarioslista',
-=======
-    path: '/usuarios',
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
+
     icon: <Icon icon="lucide:user" width="24" height="24" />,
   },
   {

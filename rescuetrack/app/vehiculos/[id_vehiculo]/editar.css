@@ -1,0 +1,67 @@
+/* vehiculoForm.css */
+.c2 {
+    display: flex;
+    flex-direction: column; /* Asegura que el contenido se apile verticalmente */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 600px; /* Ajustado para dar más espacio */
+    text-align: center;
+  }
+  
+  .titulo {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #154780;
+  }
+  
+  .form {
+    margin-top: 20px; /* Reduce el margen superior */
+    width: 100%; /* Asegura que el formulario use el ancho completo del contenedor */
+  }
+  
+  .input-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%; /* Hace que el input ocupe el ancho completo */
+  }
+  
+  .button {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #154780;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+    width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    background-color: #135a8a; /* Cambia el color al pasar el mouse */
+  }
+  

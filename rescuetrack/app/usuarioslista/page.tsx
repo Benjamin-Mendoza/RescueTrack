@@ -43,28 +43,27 @@ export default function UsuariosPage() {
   };
 
   const handleAñadirUsuario = () => {
-    router.push('/registro'); // Redirige a la página de registro
+    router.push('/registro'); 
   };
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Lista de Usuarios</h1>
-
-      {/* Botón de añadir usuario */}
-      <button
-        onClick={handleAñadirUsuario}
-        style={{
-          backgroundColor: '#008CBA', // Azul
-          color: 'white',
-          padding: '10px 15px',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          marginBottom: '20px', // Espacio entre el botón y la tabla
-        }}
-      >
-        Añadir Usuario
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+        <button 
+          style={{
+            backgroundColor: '#154780',
+            color: 'white',
+            padding: '10px 15px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }} 
+          onClick={handleAñadirUsuario}
+        >
+          Añadir usuario
+        </button>
+      </div>
 
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
@@ -89,7 +88,7 @@ export default function UsuariosPage() {
                 <button
                   onClick={() => handleVerDetalles(usuario.id_usuario)}
                   style={{
-                    backgroundColor: '#4CAF50',
+                    backgroundColor: '#154780',
                     color: 'white',
                     padding: '10px 15px',
                     border: 'none',

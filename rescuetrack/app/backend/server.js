@@ -16,43 +16,24 @@ const supabaseUrl = 'https://uzqqlqvymrbuuxdvsxfb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXFscXZ5bXJidXV4ZHZzeGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MjUxNTMsImV4cCI6MjA0NDAwMTE1M30.LVAyh2Fr2EhUlFVqjXA2tMkNk5p1Xv2iazQADo3y49Y'; 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-<<<<<<< HEAD
 //GESTION DE VEHICULOS
 
 //Obtener datos de los vehiculos
-app.get('/vehiculos', async (req, res) => {
-  try {
-=======
-// Gestion de vehiculos - GET /vehiculos
+
 app.get('/vehiculos', async (req, res) => {
   try {
     // Realiza la consulta a la tabla 'vehiculo' en Supabase
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
     const { data, error } = await supabase.from('vehiculo').select('*');
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-<<<<<<< HEAD
-    res.json(data);
-=======
     res.json(data); // Devuelve los datos en formato JSON
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
   } catch (err) {
     console.error('Error al obtener los vehículos:', err);
     res.status(500).send('Error al obtener los vehículos');
   }
 });
 
-<<<<<<< HEAD
-//Obtener datos de los vehiculos por id
-app.get('/vehiculos/:id_vehiculo', async (req, res) => {
-  const { id_vehiculo } = req.params;
-  try {
-    const { data, error } = await supabase.from('vehiculo').select('*').eq('id_vehiculo', id_vehiculo).single();
-    if (error) {
-      return res.status(404).json({ error: 'Vehiculo no encontrado' }); 
-    }
-=======
 // Gestion de vehiculos por id_vehiculo
 app.get('/vehiculos/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
@@ -68,7 +49,6 @@ app.get('/vehiculos/:id_vehiculo', async (req, res) => {
       return res.status(404).json({ error: 'Vehicle not found' }); // Cambia a 404 si no se encuentra el vehículo
     }
 
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
     res.json(data);
   } catch (err) {
     console.error('Error al obtener el vehículo:', err);
@@ -76,11 +56,8 @@ app.get('/vehiculos/:id_vehiculo', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 //Modificar datos de los vehiculos 
-=======
 // Editar vehiculo
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
 app.put('/vehiculos/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
   const { marca, modelo, anio } = req.body;
@@ -94,11 +71,9 @@ app.put('/vehiculos/:id_vehiculo', async (req, res) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-<<<<<<< HEAD
-    res.json(data);
-=======
+
     res.json(data); // Devuelve los datos actualizados en formato JSON
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
+
   } catch (err) {
     console.error('Error al actualizar el vehículo:', err);
     res.status(500).send('Error al actualizar el vehículo');
@@ -122,13 +97,33 @@ app.post('/registro', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-
 //GESTION DE USUARIOS
 
+// Login
+app.post('/login', async (req, res) => {
+  const { email, contrasenia } = req.body;
+
+  try {
+    const { data, error } = await supabase.from('usuario').select('email, contrasenia, rol').eq('email', email).single();
+    if (error || !data) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    if (data.contrasenia !== contrasenia) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+    if (data.rol !== 'secretario') {
+      return res.status(403).json({ error: 'Acceso denegado. Solo los secretarios pueden acceder.' });
+    }
+    res.status(200).json({ message: 'Login exitoso', rol: data.rol });
+
+  } catch (err) {
+    console.error('Error al intentar iniciar sesión:', err);
+    res.status(500).send('Error al intentar iniciar sesión');
+  }
+});
+
 //Obtener datos de los usuarios
-=======
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
+
 app.get('/usuarios', async (req, res) => {
   try {
     const { data, error } = await supabase.from('usuario').select('*');
@@ -142,7 +137,6 @@ app.get('/usuarios', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 //Obtener datos de los usuarios por id
 app.get('/usuarios/:id_usuario', async (req, res) => {
   const { id_usuario } = req.params;
@@ -188,26 +182,26 @@ app.delete('/deletuser/:id_usuario', async (req, res) => {
     console.log('Data:', data);
     console.log('Error:', error);
 
+    // Manejo de errores
     if (error) {
-      console.error('Error al eliminar el usuario:', error);
+      console.error('Usuario eliminado corractamente');
       return res.status(500).json({ error: error.message });
     }
 
-    if (data.length === 0) {
+    // Verificar si se eliminó algún usuario (data puede ser null)
+    if (!data || data.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    res.json({ message: 'Usuario eliminado con éxito' });
+    // Redirigir a usuarioslista si el usuario fue eliminado correctamente
+    res.redirect('/usuarioslista');
   } catch (err) {
-    console.error('Error al eliminar el usuario:', err);
-    res.status(500).send('Error al eliminar el usuario');
+    console.error('Usuario eliminado corractamente');
+    res.status(500).send('Usuario eliminado corractamente');
   }
 });
 
 
-
-=======
->>>>>>> 3a9d137fd15ffb83babafa2fc2e45830eb9b0be5
 // Inicia el servidor
 app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
