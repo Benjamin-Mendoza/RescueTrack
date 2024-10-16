@@ -1,4 +1,3 @@
-// app/usuarios/page.tsx
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -38,8 +37,19 @@ export default function UsuariosPage() {
     router.push(`/usuarios/${id_usuario}`);
   };
 
-  const handleEliminar = (id_usuario: number) => {
-    router.push(`/deletuser/${id_usuario}`);
+  const handleEliminar = async (id_usuario: number) => {
+    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+      // Puedes usar aquí el mismo método deleteUsuario que tenías en UsuarioDetalles
+      try {
+        await deleteUsuario(id_usuario);
+        alert('Usuario eliminado con éxito');
+        // Actualiza la lista de usuarios
+        setUsuarios((prev) => prev.filter((user) => user.id_usuario !== id_usuario));
+      } catch (error) {
+        console.error(error);
+        alert('Error al eliminar el usuario: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      }
+    }
   };
 
   const handleAñadirUsuario = () => {
@@ -119,6 +129,20 @@ export default function UsuariosPage() {
       </table>
     </div>
   );
+}
+
+// Mueve la función deleteUsuario fuera y compártela entre componentes
+async function deleteUsuario(id_usuario: number) {
+  const res = await fetch(`http://localhost:8081/deletuser/${id_usuario}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json(); // Obtener el mensaje de error del servidor
+    throw new Error(errorData.error || 'Error al eliminar el usuario');
+  }
+
+  return res.json();
 }
 
 

@@ -174,6 +174,7 @@ app.delete('/deletuser/:id_usuario', async (req, res) => {
   const { id_usuario } = req.params;
 
   try {
+    // Intentar eliminar el usuario
     const { data, error } = await supabase
       .from('usuario')
       .delete()
@@ -182,24 +183,26 @@ app.delete('/deletuser/:id_usuario', async (req, res) => {
     console.log('Data:', data);
     console.log('Error:', error);
 
-    // Manejo de errores
+    // Verificar si hubo un error en la eliminación
     if (error) {
-      console.error('Usuario eliminado corractamente');
+      console.error('Error al eliminar el usuario:', error);
       return res.status(500).json({ error: error.message });
     }
 
-    // Verificar si se eliminó algún usuario (data puede ser null)
+    // Verificar si se eliminó algún usuario (data puede ser null o un array vacío)
     if (!data || data.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Redirigir a usuarioslista si el usuario fue eliminado correctamente
-    res.redirect('/usuarioslista');
+    // Respuesta de éxito
+    return res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    
   } catch (err) {
-    console.error('Usuario eliminado corractamente');
-    res.status(500).send('Usuario eliminado corractamente');
+    console.error('Error al eliminar el usuario:', err);
+    res.status(500).send('Error al eliminar el usuario');
   }
 });
+
 
 
 // Inicia el servidor
