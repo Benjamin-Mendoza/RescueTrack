@@ -48,7 +48,6 @@ export default function VehiculoDetalles({ params }: { params: { id_vehiculo: st
 
   return (
     <div>
-      <h1>Detalles del Vehículo</h1>
       <VehiculoForm vehiculo={vehiculo} setVehiculo={setVehiculo} />
     </div>
   );

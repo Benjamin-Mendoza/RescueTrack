@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import './usuario.css'; // Importamos el archivo CSS
 
 interface Usuario {
   id_usuario: number;
@@ -21,7 +22,7 @@ async function getUsuarios() {
 }
 
 async function deleteUsuario(id_usuario: number) {
-  const res = await fetch(`http://localhost:8081/deleteuser/${id_usuario}`, { // Corrige aquí
+  const res = await fetch(`http://localhost:8081/deleteuser/${id_usuario}`, {
     method: 'DELETE',
   });
 
@@ -74,68 +75,42 @@ export default function UsuariosPage() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Lista de Usuarios</h1>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-        <button
-          style={{
-            backgroundColor: '#154780',
-            color: 'white',
-            padding: '10px 15px',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-          onClick={handleAñadirUsuario}
-        >
+    <div className="container">
+      <div className="header-button">
+        <button className="button" onClick={handleAñadirUsuario}>
           Añadir usuario
         </button>
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table className="table">
         <thead>
-          <tr style={{ backgroundColor: '#f2f2f2', borderBottom: '2px solid #ddd' }}>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Nombre</th>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Apellido</th>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Email</th>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Rol</th>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Compañía</th>
-            <th style={{ padding: '10px', textAlign: 'left' }}>Acciones</th>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Compañía</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {usuarios.map((usuario) => (
-            <tr key={usuario.id_usuario} style={{ borderBottom: '1px solid #ddd' }}>
-              <td style={{ padding: '10px' }}>{usuario.nombre}</td>
-              <td style={{ padding: '10px' }}>{usuario.apellido}</td>
-              <td style={{ padding: '10px' }}>{usuario.email}</td>
-              <td style={{ padding: '10px' }}>{usuario.rol}</td>
-              <td style={{ padding: '10px' }}>{usuario.compania}</td>
-              <td style={{ padding: '10px' }}>
+            <tr key={usuario.id_usuario}>
+              <td>{usuario.nombre}</td>
+              <td>{usuario.apellido}</td>
+              <td>{usuario.email}</td>
+              <td>{usuario.rol}</td>
+              <td>{usuario.compania}</td>
+              <td className="table-actions">
                 <button
                   onClick={() => handleVerDetalles(usuario.id_usuario)}
-                  style={{
-                    backgroundColor: '#154780',
-                    color: 'white',
-                    padding: '10px 15px',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    marginRight: '10px',
-                  }}
+                  className="button"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => handleEliminar(usuario.id_usuario)}
-                  style={{
-                    backgroundColor: '#f44336',
-                    color: 'white',
-                    padding: '10px 15px',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                  }}
+                  className="button button-eliminar"
                 >
                   Eliminar
                 </button>
@@ -147,3 +122,4 @@ export default function UsuariosPage() {
     </div>
   );
 }
+

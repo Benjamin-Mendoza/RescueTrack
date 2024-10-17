@@ -63,51 +63,96 @@ const Registro = () => {
           <div className="input-group">
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium">Nombre</label>
-              <input type="text" name="nombre" id="nombre" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.nombre} onChange={handleInputChange} />
+              <input 
+                type="text" 
+                name="nombre" 
+                id="nombre" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.nombre} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div>
               <label htmlFor="apellido" className="block text-sm font-medium">Apellido</label>
-              <input type="text" name="apellido" id="apellido" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.apellido} onChange={handleInputChange} />
+              <input 
+                type="text" 
+                name="apellido" 
+                id="apellido" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.apellido} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
           </div>
 
           <div className="input-group">
             <div>
               <label htmlFor="email" className="block text-sm font-medium">Correo Electrónico</label>
-              <input type="email" name="email" id="email" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.email} onChange={handleInputChange} />
+              <input 
+                type="email" 
+                name="email" 
+                id="email" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.email} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div>
               <label htmlFor="contrasenia" className="block text-sm font-medium">Contraseña</label>
-              <input type="password" name="contrasenia" id="contrasenia" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.contrasenia} onChange={handleInputChange} />
+              <input 
+                type="password" 
+                name="contrasenia" 
+                id="contrasenia" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.contrasenia} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
           </div>
 
           <div className="input-group">
             <div>
               <label htmlFor="rol" className="block text-sm font-medium">Rol</label>
-              <select name="rol" id="rol" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.rol} onChange={handleInputChange}>
+              <select 
+                name="rol" 
+                id="rol" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.rol} 
+                onChange={handleInputChange} 
+                required
+              >
                 <option value="">Seleccionar rol</option>
-                <option value="secretario">Secretario</option>
-                <option value="mecanico">Mecánico</option>
-                <option value="capitan">Capitán</option>
-                <option value="teniente">Teniente</option>
+                <option value="Secretario">Secretario</option>
+                <option value="Mecánico">Mecánico</option>
+                <option value="Capitán">Capitán</option>
+                <option value="Teniente">Teniente</option>
               </select>
             </div>
             <div>
               <label htmlFor="compania" className="block text-sm font-medium">Compañía</label>
-              <select name="compania" id="compania" className="mt-1 block w-full px-3 py-2 border rounded-md" value={formData.compania} onChange={handleInputChange}>
-                <option value="">Seleccionar compañía</option>
-                <option value="1">Primera Compañía</option>
-                <option value="2">Segunda Compañía</option>
-                <option value="3">Tercera Compañía</option>
-                <option value="4">Cuarta Compañía</option>
-                <option value="5">Quinta Compañía</option>
-                <option value="6">Sexta Compañía</option>
-                <option value="7">Séptima Compañía</option>
-                <option value="8">Octava Compañía</option>
-                <option value="9">Novena Compañía</option>
-                <option value="10">Décima Compañía</option>
-                <option value="11">Undécima Compañía</option>
+              <select 
+                name="compania" 
+                id="compania" 
+                className="mt-1 block w-full px-3 py-2 border rounded-md" 
+                value={formData.compania} 
+                onChange={handleInputChange} 
+                required
+              >
+                <option value="" disabled>Seleccionar Compañía</option>
+                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
               </select>
             </div>
           </div>
@@ -120,6 +165,7 @@ const Registro = () => {
 };
 
 export default Registro;
+
 
 
 

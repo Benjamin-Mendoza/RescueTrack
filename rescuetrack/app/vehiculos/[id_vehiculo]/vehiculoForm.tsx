@@ -69,12 +69,14 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
         <div className="input-group">
           <div>
             <label className="label">Estado:</label>
-            <input
-              type="text"
+            <select
               value={estado_vehiculo}
               onChange={(e) => setEstado(e.target.value)}
               className="input"
-            />
+            >
+              <option value="Operativo">Operativo</option>
+              <option value="En Mantención">En Mantención</option>
+            </select>
           </div>
           <div>
             <label className="label">Kilometraje:</label>
@@ -91,4 +93,5 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
     </div>
   );
 }
+
 

@@ -11,7 +11,7 @@ interface Usuario {
   email: string;
   contrasenia: string;
   rol: string;
-  compania: number;
+  compania: string;
 }
 
 async function getUsuario(id_usuario: number): Promise<Usuario> {
@@ -130,28 +130,29 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
               value={rol}
               onChange={(e) => setRol(e.target.value)}
               className="select">
-              <option value="secretario">Secretario</option>
-              <option value="mecanico">Mecánico</option>
-              <option value="capitan">Capitán</option>
-              <option value="teniente">Teniente</option>
+              <option value="Secretario">Secretario</option>
+              <option value="Mecánico">Mecánico</option>
+              <option value="Capitán">Capitán</option>
+              <option value="Teniente">Teniente</option>
             </select>
           </div>
           <div>
             <label className="label">Compañía:</label>
             <select
               value={compania}
-              onChange={(e) => setCompania(Number(e.target.value))}
+              onChange={(e) => setCompania(e.target.value)}
               className="select">
-              <option value="1">Primera</option>
-              <option value="2">Segunda</option>
-              <option value="3">Tercera</option>
-              <option value="4">Cuarta</option>
-              <option value="5">Quinta</option>
-              <option value="6">Sexta</option>
-              <option value="7">Septima</option>
-              <option value="8">Octava</option>
-              <option value="9">Novena</option>
-              <option value="11">Undecima</option>
+                <option value="" disabled>Seleccionar Compañía</option>
+                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
             </select>
           </div>
         </div>

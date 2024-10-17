@@ -1,31 +1,14 @@
-/* vehiculos.css */
+/* usuario.css */
 .container {
   padding: 20px;
 }
 
-.filtros-container {
-  display: flex;
-  justify-content: space-between;
+.header-button {
+  text-align: right;
   margin-bottom: 20px;
 }
 
-.filtro-item {
-  margin-right: 20px;
-}
-
-.filtro-label {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.filtro-select {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.button-agregar {
+.button {
   background-color: #154780;
   color: white;
   padding: 10px 15px;
@@ -60,46 +43,23 @@
   gap: 10px;
 }
 
-.button-editar {
-  background-color: #154780;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .button-eliminar {
   background-color: #f44336;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
-/* Media Queries para dispositivos móviles y tabletas */
 @media (max-width: 768px) {
-  .filtros-container {
-    flex-direction: column;
-  }
-
-  .filtro-item {
-    margin-bottom: 10px;
-    margin-right: 0;
-  }
-
+  /* Adaptar los filtros a pantallas pequeñas */
   .table {
     font-size: 12px;
   }
 
-  .button-agregar {
-    width: 100%;
-    padding: 12px;
-  }
-
   .table th, .table td {
     padding: 8px;
+  }
+
+  .button {
+    width: 100%;
+    padding: 12px;
   }
 
   .table-actions {
@@ -107,8 +67,12 @@
     gap: 5px;
   }
 
-  .button-editar, .button-eliminar {
+  .button-eliminar, .button {
     width: 100%;
+  }
+
+  .header-button {
+    text-align: center;
   }
 }
 
@@ -119,22 +83,17 @@
     padding: 5px;
   }
 
-  .filtro-label {
+  .button {
+    padding: 8px;
     font-size: 12px;
   }
 
-  .filtro-select {
-    padding: 6px;
-    font-size: 12px;
+  .table-actions {
+    flex-direction: column;
   }
 
-  .button-agregar, .button-editar, .button-eliminar {
+  .button-eliminar, .button {
     padding: 8px;
     font-size: 12px;
   }
 }
-
-
-
-
-  

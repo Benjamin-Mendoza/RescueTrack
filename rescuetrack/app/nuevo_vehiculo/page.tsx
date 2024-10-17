@@ -95,9 +95,6 @@ export default function AgregarVehiculoForm() {
             required
           />
         </div>
-      </div>
-
-      <div className="input-group-row">
         <div className="input-group">
           <label className="label">Modelo:</label>
           <input
@@ -108,6 +105,9 @@ export default function AgregarVehiculoForm() {
             required
           />
         </div>
+      </div>
+
+      <div className="input-group-row">
         <div className="input-group">
           <label className="label">Año:</label>
           <input
@@ -118,9 +118,6 @@ export default function AgregarVehiculoForm() {
             required
           />
         </div>
-      </div>
-
-      <div className="input-group-row">
         <div className="input-group">
           <label className="label">Tipo de Vehículo:</label>
           <select
@@ -143,7 +140,6 @@ export default function AgregarVehiculoForm() {
             <option value="Carro bomba de segundo socorro">Carro bomba de segundo socorro</option>
           </select>
         </div>
-
         <div className="input-group">
           <label className="label">Estado del Vehículo:</label>
           <select
@@ -179,17 +175,17 @@ export default function AgregarVehiculoForm() {
             className="input"
             required
           >
-            <option value="" disabled>Seleccionar Compañía</option>
-            <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-            <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
-            <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-            <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
-            <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
-            <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
-            <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-            <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-            <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-            <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+                <option value="" disabled>Seleccionar Compañía</option>
+                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
           </select>
         </div>
       </div>
@@ -198,6 +194,7 @@ export default function AgregarVehiculoForm() {
     </form>
   );
 }
+
 
 
 

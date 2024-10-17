@@ -1,67 +1,85 @@
-
 .c2 {
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: center;
-    height: 100vh; 
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 40px 30px;
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-  }
-  
-  .titulo {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #154780;
-  }
-  
-  .form {
-    margin-top: 20px;
-    width: 100%;
-  }
-  
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 15px; /* Reduce el espacio inferior */
+  font-size: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduce el espacio entre los elementos del formulario */
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Reduce el espacio entre los inputs */
+}
+
+.input-group > div {
+  flex: 1 1 100%; /* Asegura que los inputs se adapten al tamaño de pantalla */
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px; /* Reduce el padding del input */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.button {
+  padding: 12px; /* Reduce el padding del botón */
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
   .input-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 30px;
-  }
-  
-  .label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 100%; 
+    flex-direction: column; /* Cambia los elementos a una columna en pantallas más pequeñas */
   }
   
   .button {
-    display: flex;
-    justify-content: center;
-    padding: 10px 20px;
+    font-size: 18px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 20px;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .button {
     font-size: 16px;
-    background-color: #154780;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    color: white;
-    width: 100%;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 8px;
   }
-  
-  .button:hover {
-    background-color: #135a8a; 
-  }
-  
+}
