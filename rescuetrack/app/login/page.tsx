@@ -18,10 +18,7 @@ export default function Login() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleLogin = async () => {
-    // Limpiar mensaje de error
     setErrorMessage('');
-
-    // Realizar la petición al backend
     try {
       const response = await fetch('http://localhost:8081/login', {
         method: 'POST',
@@ -35,7 +32,6 @@ export default function Login() {
 
       if (response.ok) {
         if (data.rol === 'secretario') {
-          // Redirigir al home si el rol es secretario
           router.push('/home');
         } else {
           setErrorMessage('Acceso denegado. Solo los secretarios pueden acceder.');

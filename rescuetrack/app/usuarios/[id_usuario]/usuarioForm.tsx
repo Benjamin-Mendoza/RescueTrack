@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import './usuario.css'; // Asegúrate de tener este archivo CSS
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useRouter } from 'next/navigation'; 
+import './usuario.css';
 
 interface Usuario {
   id_usuario: number;
@@ -11,6 +12,18 @@ interface Usuario {
   contrasenia: string;
   rol: string;
   compania: number;
+}
+
+async function getUsuario(id_usuario: number): Promise<Usuario> {
+  const res = await fetch(`http://localhost:8081/usuarios/${id_usuario}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch user details');
+  }
+
+  return res.json();
 }
 
 async function updateUsuario(id_usuario: number, updatedData: Partial<Usuario>) {
@@ -29,7 +42,13 @@ async function updateUsuario(id_usuario: number, updatedData: Partial<Usuario>) 
   return res.json();
 }
 
-export default function UsuarioForm({ usuario }: { usuario: Usuario }) {
+interface UsuarioFormProps {
+  usuario: Usuario;
+  setUsuario: Dispatch<SetStateAction<Usuario | null>>;
+}
+
+export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
+  const router = useRouter();
   const [nombre, setNombre] = useState(usuario.nombre);
   const [apellido, setApellido] = useState(usuario.apellido);
   const [email, setEmail] = useState(usuario.email);
@@ -37,11 +56,23 @@ export default function UsuarioForm({ usuario }: { usuario: Usuario }) {
   const [rol, setRol] = useState(usuario.rol);
   const [compania, setCompania] = useState(usuario.compania);
 
+  useEffect(() => {
+    setNombre(usuario.nombre);
+    setApellido(usuario.apellido);
+    setEmail(usuario.email);
+    setContrasenia(usuario.contrasenia);
+    setRol(usuario.rol);
+    setCompania(usuario.compania);
+  }, [usuario]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await updateUsuario(usuario.id_usuario, { nombre, apellido, email, contrasenia, rol, compania });
       alert('Usuario actualizado con éxito');
+      const updatedUsuario = await getUsuario(usuario.id_usuario);
+      setUsuario(updatedUsuario);
+      router.push('/usuarioslista'); 
     } catch (error) {
       console.error(error);
       alert('Error al actualizar el usuario');
@@ -95,21 +126,33 @@ export default function UsuarioForm({ usuario }: { usuario: Usuario }) {
         <div className="input-group">
           <div>
             <label className="label">Rol:</label>
-            <input
-              type="text"
+            <select
               value={rol}
               onChange={(e) => setRol(e.target.value)}
-              className="input"
-            />
+              className="select">
+              <option value="secretario">Secretario</option>
+              <option value="mecanico">Mecánico</option>
+              <option value="capitan">Capitán</option>
+              <option value="teniente">Teniente</option>
+            </select>
           </div>
           <div>
             <label className="label">Compañía:</label>
-            <input
-              type="number"
+            <select
               value={compania}
               onChange={(e) => setCompania(Number(e.target.value))}
-              className="input"
-            />
+              className="select">
+              <option value="1">Primera</option>
+              <option value="2">Segunda</option>
+              <option value="3">Tercera</option>
+              <option value="4">Cuarta</option>
+              <option value="5">Quinta</option>
+              <option value="6">Sexta</option>
+              <option value="7">Septima</option>
+              <option value="8">Octava</option>
+              <option value="9">Novena</option>
+              <option value="11">Undecima</option>
+            </select>
           </div>
         </div>
         <button type="submit" className="button">Guardar cambios</button>
@@ -117,5 +160,4 @@ export default function UsuarioForm({ usuario }: { usuario: Usuario }) {
     </div>
   );
 }
-
 

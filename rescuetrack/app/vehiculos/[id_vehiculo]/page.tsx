@@ -1,9 +1,7 @@
-// src/app/vehiculos/[id_vehiculo]/page.tsx
-
+'use client';
 import { Metadata } from 'next';
 import VehiculoForm from './vehiculoForm';
-
-
+import { useEffect, useState } from 'react';
 
 interface Vehiculo {
   id_vehiculo: number;
@@ -16,7 +14,6 @@ interface Vehiculo {
   kilometraje: number;
 }
 
-// Función para obtener el vehículo de la API
 async function getVehiculo(id_vehiculo: number): Promise<Vehiculo> {
   const res = await fetch(`http://localhost:8081/vehiculos/${id_vehiculo}`, {
     next: { revalidate: 60 }, // Revalidar cada 60 segundos
@@ -29,14 +26,30 @@ async function getVehiculo(id_vehiculo: number): Promise<Vehiculo> {
   return res.json();
 }
 
-// Componente principal
-export default async function VehiculoDetalles({ params }: { params: { id_vehiculo: string } }) {
-  const vehiculo = await getVehiculo(Number(params.id_vehiculo));
+export default function VehiculoDetalles({ params }: { params: { id_vehiculo: string } }) {
+  const [vehiculo, setVehiculo] = useState<Vehiculo | null>(null);
   
+  useEffect(() => {
+    const fetchVehiculo = async () => {
+      try {
+        const data = await getVehiculo(Number(params.id_vehiculo));
+        setVehiculo(data);
+      } catch (error) {
+        console.error('Error fetching vehicle details:', error);
+      }
+    };
+    
+    fetchVehiculo();
+  }, [params.id_vehiculo]);
+
+  if (!vehiculo) {
+    return <div>Cargando detalles del vehículo...</div>; 
+  }
+
   return (
     <div>
       <h1>Detalles del Vehículo</h1>
-      <VehiculoForm vehiculo={vehiculo} />
+      <VehiculoForm vehiculo={vehiculo} setVehiculo={setVehiculo} />
     </div>
   );
 }

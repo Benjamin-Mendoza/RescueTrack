@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import { supabase } from './supabaseClient'; 
 import './registrovehiculo.css';
 
@@ -36,6 +37,8 @@ export default function AgregarVehiculoForm() {
   const [kilometraje, setKilometraje] = useState<number | ''>('');
   const [compania, setCompania] = useState('');
 
+  const router = useRouter(); 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -52,8 +55,7 @@ export default function AgregarVehiculoForm() {
 
       await createVehiculo(newVehiculo);
       alert('Vehículo agregado con éxito');
-
-      // Limpiar formulario
+      router.push('/lista'); 
       setPatente('');
       setMarca('');
       setModelo('');
@@ -178,16 +180,16 @@ export default function AgregarVehiculoForm() {
             required
           >
             <option value="" disabled>Seleccionar Compañía</option>
-            <option value="PRIMERA COMPAÑÍA 'Eduardo Cornou Chabry'">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-            <option value="SEGUNDA COMPAÑÍA 'Zapadores'">SEGUNDA COMPAÑÍA "Zapadores"</option>
-            <option value="TERCERA COMPAÑÍA 'Salvadora y Guardia de la Propiedad'">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-            <option value="CUARTA COMPAÑÍA 'Umberto Primo'">CUARTA COMPAÑÍA "Umberto Primo"</option>
-            <option value="QUINTA COMPAÑÍA 'Bomba Chile'">QUINTA COMPAÑÍA "Bomba Chile"</option>
-            <option value="SEXTA COMPAÑÍA 'Salvadora'">SEXTA COMPAÑÍA "Salvadora"</option>
-            <option value="SÉPTIMA COMPAÑÍA 'Bomba Almirante Calixto Rogers'">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-            <option value="OCTAVA COMPAÑÍA 'Bomba Huachipato'">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-            <option value="NOVENA COMPAÑÍA 'Juan Guillermo Sosa Severino'">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-            <option value="UNDÉCIMA COMPAÑÍA 'Bomba San Vicente'">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+            <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+            <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
+            <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+            <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
+            <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
+            <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
+            <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+            <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+            <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+            <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
           </select>
         </div>
       </div>
@@ -196,9 +198,6 @@ export default function AgregarVehiculoForm() {
     </form>
   );
 }
-
-
-
 
 
 

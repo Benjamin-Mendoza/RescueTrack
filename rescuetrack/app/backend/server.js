@@ -22,12 +22,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.get('/vehiculos', async (req, res) => {
   try {
-    // Realiza la consulta a la tabla 'vehiculo' en Supabase
     const { data, error } = await supabase.from('vehiculo').select('*');
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-    res.json(data); // Devuelve los datos en formato JSON
+    res.json(data);
   } catch (err) {
     console.error('Error al obtener los vehículos:', err);
     res.status(500).send('Error al obtener los vehículos');
@@ -43,10 +42,10 @@ app.get('/vehiculos/:id_vehiculo', async (req, res) => {
       .from('vehiculo')
       .select('*')
       .eq('id_vehiculo', id_vehiculo)
-      .single(); // Devuelve un solo resultado
+      .single();
 
     if (error) {
-      return res.status(404).json({ error: 'Vehicle not found' }); // Cambia a 404 si no se encuentra el vehículo
+      return res.status(404).json({ error: 'Vehicle not found' }); 
     }
 
     res.json(data);
@@ -56,46 +55,45 @@ app.get('/vehiculos/:id_vehiculo', async (req, res) => {
   }
 });
 
-//Modificar datos de los vehiculos 
+
 // Editar vehiculo
 app.put('/vehiculos/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
   const { estado_vehiculo, kilometraje } = req.body;
 
+  const vehiculoId = parseInt(id_vehiculo);
+  console.log('Datos recibidos:', { estado_vehiculo, kilometraje });
   try {
-    const { data, error } = await supabase
-      .from('vehiculo')
-      .update({ estado_vehiculo, kilometraje })
-      .eq('id_vehiculo', id_vehiculo);
-
+    const { data, error } = await supabase.from('vehiculo').update({ estado_vehiculo, kilometraje }).eq('id_vehiculo', vehiculoId);
     if (error) {
+      console.error('Error al actualizar el vehículo:', error.message);
       return res.status(500).json({ error: error.message });
     }
-
-    res.json(data); // Devuelve los datos actualizados en formato JSON
-
+    res.json(data);
   } catch (err) {
     console.error('Error al actualizar el vehículo:', err);
     res.status(500).send('Error al actualizar el vehículo');
   }
 });
 
-//Gestion de usuarios
-app.post('/registro', async (req, res) => {
-  const { nombre, apellido, email, contrasenia, rol, compania } = req.body;
-
+//Eliminar vehiculos
+app.delete('/deletevehiculo/:id_vehiculo', async (req, res) => {
+  const { id_vehiculo } = req.params;
   try {
-    const { data, error } = await supabase.from('usuario').insert([{ nombre, apellido, email, contrasenia, rol, compania }]);
+    const { data, error } = await supabase.from('vehiculo').delete().eq('id_vehiculo', id_vehiculo);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-
-    res.status(201).json({ message: 'Registro exitoso', data });
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'Vehículo no encontrado' });
+    }
+    res.status(200).json({ message: 'Vehículo eliminado correctamente' }); 
   } catch (err) {
-    console.error('Error al registrar el usuario:', err);
-    res.status(500).send('Error al registrar el usuario');
+    res.status(500).json({ error: 'Error al eliminar el vehículo' });
   }
 });
+
+
 
 //GESTION DE USUARIOS
 
@@ -119,6 +117,23 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Error al intentar iniciar sesión:', err);
     res.status(500).send('Error al intentar iniciar sesión');
+  }
+});
+
+//Agregar usuarios
+app.post('/registro', async (req, res) => {
+  const { nombre, apellido, email, contrasenia, rol, compania } = req.body;
+
+  try {
+    const { data, error } = await supabase.from('usuario').insert([{ nombre, apellido, email, contrasenia, rol, compania }]);
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.status(201).json({ message: 'Registro exitoso', data });
+  } catch (err) {
+    console.error('Error al registrar el usuario:', err);
+    res.status(500).send('Error al registrar el usuario');
   }
 });
 
@@ -170,40 +185,30 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
 
 //Eliminar usuario
 
-app.delete('/deletuser/:id_usuario', async (req, res) => {
+app.delete('/deleteuser/:id_usuario', async (req, res) => {
   const { id_usuario } = req.params;
-
+  console.log('ID de usuario recibido:', id_usuario);
+  const idNum = Number(id_usuario);
+  if (isNaN(idNum)) {
+    return res.status(400).json({ error: 'ID de usuario no válido' });
+  }
   try {
-    // Intentar eliminar el usuario
-    const { data, error } = await supabase
-      .from('usuario')
-      .delete()
-      .eq('id_usuario', id_usuario);
-
+    const { data, error } = await supabase.from('usuario').delete().eq('id_usuario', idNum); 
     console.log('Data:', data);
     console.log('Error:', error);
-
-    // Verificar si hubo un error en la eliminación
     if (error) {
       console.error('Error al eliminar el usuario:', error);
       return res.status(500).json({ error: error.message });
     }
-
-    // Verificar si se eliminó algún usuario (data puede ser null o un array vacío)
     if (!data || data.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-
-    // Respuesta de éxito
-    return res.status(200).json({ message: 'Usuario eliminado correctamente' });
-    
+    return res.status(200).json({ message: 'Usuario eliminado correctamente' });  
   } catch (err) {
     console.error('Error al eliminar el usuario:', err);
-    res.status(500).send('Error al eliminar el usuario');
+    return res.status(500).json({ error: 'Error al eliminar el usuario' });
   }
 });
-
-
 
 // Inicia el servidor
 app.listen(PORT, () => {

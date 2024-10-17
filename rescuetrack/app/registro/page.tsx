@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import './registro.css';
 
 const Registro = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -34,6 +36,15 @@ const Registro = () => {
       
       if (response.ok) {
         alert('Usuario registrado con éxito');
+        router.push('/usuarioslista');
+        setFormData({
+          nombre: '',
+          apellido: '',
+          email: '',
+          contrasenia: '',
+          rol: '',
+          compania: ''
+        });
       } else {
         console.error('Error en el registro:', data.error);
         alert('Hubo un problema al registrar el usuario');
@@ -95,6 +106,7 @@ const Registro = () => {
                 <option value="7">Séptima Compañía</option>
                 <option value="8">Octava Compañía</option>
                 <option value="9">Novena Compañía</option>
+                <option value="10">Décima Compañía</option>
                 <option value="11">Undécima Compañía</option>
               </select>
             </div>
@@ -108,5 +120,6 @@ const Registro = () => {
 };
 
 export default Registro;
+
 
 
