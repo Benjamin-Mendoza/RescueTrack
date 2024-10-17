@@ -16,17 +16,17 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Reduce el espacio entre los elementos del formulario */
+  gap: 10px; 
 }
 
 .input-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* Reduce el espacio entre los inputs */
+  gap: 10px; 
 }
 
 .input-group > div {
-  flex: 1 1 100%; /* Asegura que los inputs ocupen el 100% del ancho en pantallas más pequeñas */
+  flex: 1 1 100%; 
 }
 
 label {
@@ -37,7 +37,7 @@ label {
 .input,
 .select {
   width: 100%;
-  padding: 8px; /* Reduce el padding de los inputs */
+  padding: 8px; 
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
@@ -58,10 +58,9 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Estilos responsivos */
 @media (max-width: 768px) {
   .input-group {
-    flex-direction: column; /* Cambia los inputs a una columna en pantallas más pequeñas */
+    flex-direction: column; 
   }
   
   button {

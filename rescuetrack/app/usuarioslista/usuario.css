@@ -1,4 +1,4 @@
-/* usuario.css */
+
 .container {
   padding: 20px;
 }
@@ -48,7 +48,7 @@
 }
 
 @media (max-width: 768px) {
-  /* Adaptar los filtros a pantallas pequeñas */
+  
   .table {
     font-size: 12px;
   }
@@ -76,7 +76,6 @@
   }
 }
 
-/* Media Queries para pantallas pequeñas (smartphones) */
 @media (max-width: 480px) {
   .table th, .table td {
     font-size: 10px;

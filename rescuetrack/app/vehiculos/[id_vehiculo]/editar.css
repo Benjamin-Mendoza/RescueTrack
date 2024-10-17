@@ -9,24 +9,24 @@
 
 .titulo {
   text-align: center;
-  margin-bottom: 15px; /* Reduce el espacio inferior */
+  margin-bottom: 15px; 
   font-size: 24px;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Reduce el espacio entre los elementos del formulario */
+  gap: 10px; 
 }
 
 .input-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* Reduce el espacio entre los inputs */
+  gap: 10px; 
 }
 
 .input-group > div {
-  flex: 1 1 100%; /* Asegura que los inputs se adapten al tamaño de pantalla */
+  flex: 1 1 100%; 
 }
 
 .label {
@@ -36,14 +36,14 @@
 
 .input {
   width: 100%;
-  padding: 8px; /* Reduce el padding del input */
+  padding: 8px; 
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
 }
 
 .button {
-  padding: 12px; /* Reduce el padding del botón */
+  padding: 12px; 
   background-color: #007BFF;
   color: white;
   border: none;
@@ -57,10 +57,10 @@
   background-color: #0056b3;
 }
 
-/* Estilos responsivos */
+
 @media (max-width: 768px) {
   .input-group {
-    flex-direction: column; /* Cambia los elementos a una columna en pantallas más pequeñas */
+    flex-direction: column; 
   }
   
   .button {

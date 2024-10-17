@@ -127,11 +127,12 @@ const Path = (props: any) => (
   <motion.path
     fill="transparent"
     strokeWidth="2"
-    stroke="hsl(0, 0%, 18%)"
+    stroke="white"  // Cambiado a blanco
     strokeLinecap="round"
     {...props}
   />
 );
+
 
 const MenuItem = ({
   className,

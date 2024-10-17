@@ -9,15 +9,15 @@
 
 .form-header {
   text-align: center;
-  margin-bottom: 15px; /* Reduce el margen inferior */
+  margin-bottom: 15px; 
   font-size: 24px;
 }
 
 .input-group-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* Reduce el espacio entre los elementos */
-  margin-bottom: 10px; /* Reduce el margen inferior de cada fila */
+  gap: 10px;
+  margin-bottom: 10px; 
 }
 
 .input-group {
@@ -28,11 +28,11 @@
 
 .label {
   font-weight: bold;
-  margin-bottom: 3px; /* Reduce el espacio entre la etiqueta y el input */
+  margin-bottom: 3px; 
 }
 
 .input {
-  padding: 8px; /* Reduce el padding interno del input */
+  padding: 8px; 
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
@@ -40,7 +40,7 @@
 
 .button {
   width: 100%;
-  padding: 12px; /* Reduce el padding del botón */
+  padding: 12px; 
   background-color: #007BFF;
   color: #fff;
   border: none;
@@ -53,7 +53,6 @@
   background-color: #0056b3;
 }
 
-/* Estilos responsivos */
 @media (max-width: 768px) {
   .input-group {
     flex: 1 1 100%;
