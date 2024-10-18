@@ -10,7 +10,7 @@ interface Usuario {
   email: string;
   contrasenia: string;
   rol: string;
-  compania: number;
+  compania: string;
 }
 
 async function getUsuario(id_usuario: number): Promise<Usuario> {

@@ -27,8 +27,6 @@ async function deleteUsuario(id_usuario: number) {
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.error || 'Error al eliminar el usuario');
   }
 
   return res.json();
@@ -110,7 +108,7 @@ export default function UsuariosPage() {
                 </button>
                 <button
                   onClick={() => handleEliminar(usuario.id_usuario)}
-                  className="button button-eliminar"
+                  className="button-eliminar"
                 >
                   Eliminar
                 </button>

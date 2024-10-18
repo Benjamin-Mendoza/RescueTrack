@@ -124,38 +124,36 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
           </div>
         </div>
         <div className="input-group">
-          <div>
-            <label className="label">Rol:</label>
-            <select
-              value={rol}
-              onChange={(e) => setRol(e.target.value)}
-              className="select">
-              <option value="Secretario">Secretario</option>
-              <option value="Mecánico">Mecánico</option>
-              <option value="Capitán">Capitán</option>
-              <option value="Teniente">Teniente</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">Compañía:</label>
-            <select
-              value={compania}
-              onChange={(e) => setCompania(e.target.value)}
-              className="select">
-                <option value="" disabled>Seleccionar Compañía</option>
-                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
-                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
-                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
-                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
-                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
-            </select>
-          </div>
+        <div>
+          <label className="label">Rol:</label>
+          <input
+            type="text"
+            value={rol}
+            onChange={(e) => setRol(e.target.value)}
+            className="input"
+          />
         </div>
+        <div>
+          <label className="label">Compañía:</label>
+          <select
+            value={compania}
+            onChange={(e) => setCompania(e.target.value)}
+            className="select">
+            <option value="" disabled>Seleccionar Compañía</option>
+            <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+            <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+            <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+            <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+            <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+            <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+            <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+            <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+            <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+            <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+          </select>
+        </div>
+      </div>
+
         <button type="submit" className="button">Guardar cambios</button>
       </form>
     </div>
