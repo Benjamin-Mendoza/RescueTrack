@@ -193,21 +193,18 @@ app.delete('/deleteuser/:id_usuario', async (req, res) => {
     return res.status(400).json({ error: 'ID de usuario no válido' });
   }
   try {
-    const { data, error } = await supabase.from('usuario').delete().eq('id_usuario', idNum); 
-    console.log('Data:', data);
-    console.log('Error:', error);
+    const { error } = await supabase.from('usuario').delete().eq('id_usuario', idNum);
     if (error) {
       console.error('Error al eliminar el usuario:', error);
       return res.status(500).json({ error: error.message });
     }
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-    return res.status(200).json({ message: 'Usuario eliminado correctamente' });  
+  
+    return res.status(200).json({ message: 'Usuario eliminado correctamente' });
   } catch (err) {
     console.error('Error al eliminar el usuario:', err);
     return res.status(500).json({ error: 'Error al eliminar el usuario' });
   }
+  
 });
 
 // Inicia el servidor

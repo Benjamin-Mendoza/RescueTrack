@@ -27,8 +27,6 @@ async function deleteUsuario(id_usuario: number) {
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.error || 'Error al eliminar el usuario');
   }
 
   return res.json();
@@ -61,14 +59,15 @@ export default function UsuariosPage() {
       try {
         await deleteUsuario(id_usuario);
         alert('Usuario eliminado con éxito');
-        const usuariosActualizados = await getUsuarios();
-        setUsuarios(usuariosActualizados);
+        const usuariosActualizados = await getUsuarios(); // Obtener la lista actualizada
+        setUsuarios(usuariosActualizados); // Actualizar el estado
       } catch (error) {
-        console.error(error);
+        console.error('Error al eliminar el usuario:', error);
         alert('Error al eliminar el usuario: ' + (error instanceof Error ? error.message : 'Error desconocido'));
       }
     }
   };
+  
 
   const handleAñadirUsuario = () => {
     router.push('/registro');

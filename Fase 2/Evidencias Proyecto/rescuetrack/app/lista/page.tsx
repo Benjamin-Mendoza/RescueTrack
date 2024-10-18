@@ -161,7 +161,6 @@ async function deleteVehiculo(id_vehiculo: number) {
   if (contentType && contentType.includes('application/json')) {
     const errorData = await res.json();
     if (!res.ok) {
-      throw new Error(errorData.error || 'Error al eliminar el vehículo');
     }
     return errorData;
   } else {
