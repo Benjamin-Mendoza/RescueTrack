@@ -16,7 +16,7 @@ interface Vehiculo {
 }
 
 async function updateVehiculo(id_vehiculo: number, updatedData: Partial<Vehiculo>) {
-  const res = await fetch(`http://localhost:8081/vehiculos/${id_vehiculo}`, {
+  const res = await fetch(`https://rescuedesplegado.onrender.com/vehiculos/${id_vehiculo}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -68,8 +68,9 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
       <form onSubmit={handleSubmit} className="form">
         <div className="input-group">
           <div>
-            <label className="label">Estado:</label>
+            <label className="label" htmlFor="estado">Estado:</label>
             <select
+              id="estado"
               value={estado_vehiculo}
               onChange={(e) => setEstado(e.target.value)}
               className="input"
@@ -79,8 +80,9 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
             </select>
           </div>
           <div>
-            <label className="label">Kilometraje:</label>
+            <label className="label" htmlFor="kilometraje">Kilometraje:</label>
             <input
+              id="kilometraje"
               type="number"
               value={kilometraje}
               onChange={(e) => setKilometraje(Number(e.target.value))}
@@ -93,5 +95,3 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
     </div>
   );
 }
-
-

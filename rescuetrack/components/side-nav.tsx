@@ -8,7 +8,7 @@ export function SideNav() {
   const pathname = usePathname(); // Obtener la ruta actual
 
   return (
-    <div className="md:w-60 bg-[#003153] h-screen flex flex-col items-center justify-between fixed border-r border-zinc-200 hidden md:flex">
+    <div className="md:w-60 bg-[#003153] h-screen flex-col items-center justify-between fixed border-r border-zinc-200 hidden md:flex">
       <div className="w-full">
         
         <div className="text-center p-4 text-2xl font-bold text-red-500 border-b border-white w-full mb-6">

@@ -17,7 +17,7 @@ interface Vehiculo {
 }
 
 async function getVehiculos() {
-  const res = await fetch('http://localhost:8081/vehiculos', { cache: 'no-store' });
+  const res = await fetch('https://rescuedesplegado.onrender.com/vehiculos', { cache: 'no-store' });
   if (!res.ok) {
     throw new Error('Failed to fetch vehicles');
   }
@@ -153,7 +153,7 @@ export default function VehiculosPage() {
 }
 
 async function deleteVehiculo(id_vehiculo: number) {
-  const res = await fetch(`http://localhost:8081/deletevehiculo/${id_vehiculo}`, {
+  const res = await fetch(`https://rescuedesplegado.onrender.com/deletevehiculo/${id_vehiculo}`, {
     method: 'DELETE',
   });
 

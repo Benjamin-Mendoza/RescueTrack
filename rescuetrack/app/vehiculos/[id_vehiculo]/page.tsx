@@ -15,7 +15,7 @@ interface Vehiculo {
 }
 
 async function getVehiculo(id_vehiculo: number): Promise<Vehiculo> {
-  const res = await fetch(`http://localhost:8081/vehiculos/${id_vehiculo}`, {
+  const res = await fetch(`https://rescuedesplegado.onrender.com/vehiculos/${id_vehiculo}`, {
     next: { revalidate: 60 }, // Revalidar cada 60 segundos
   });
   

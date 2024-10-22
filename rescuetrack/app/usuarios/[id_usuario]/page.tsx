@@ -14,7 +14,7 @@ interface Usuario {
 }
 
 async function getUsuario(id_usuario: number): Promise<Usuario> {
-  const res = await fetch(`http://localhost:8081/usuarios/${id_usuario}`, {
+  const res = await fetch(`https://rescuedesplegado.onrender.com/usuarios/${id_usuario}`, {
     next: { revalidate: 60 },
   });
 

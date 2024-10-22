@@ -14,7 +14,7 @@ interface Usuario {
 }
 
 async function getUsuarios() {
-  const res = await fetch('http://localhost:8081/usuarios', { cache: 'no-store' });
+  const res = await fetch('https://rescuedesplegado.onrender.com/usuarios', { cache: 'no-store' });
   if (!res.ok) {
     throw new Error('Error al obtener los usuarios');
   }
@@ -22,7 +22,7 @@ async function getUsuarios() {
 }
 
 async function deleteUsuario(id_usuario: number) {
-  const res = await fetch(`http://localhost:8081/deleteuser/${id_usuario}`, {
+  const res = await fetch(`https://rescuedesplegado.onrender.com/deleteuser/${id_usuario}`, {
     method: 'DELETE',
   });
 
