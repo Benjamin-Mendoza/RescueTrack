@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import './userlist.css';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<any[]>([]);
@@ -11,7 +10,7 @@ const Usuarios = () => {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const response = await fetch('https://rescuedesplegado.onrender.com/usuarios'); 
+        const response = await fetch('http://localhost:8081/usuarios'); 
         if (!response.ok) {
           throw new Error('Error al obtener los usuarios');
         }
@@ -59,6 +58,20 @@ const Usuarios = () => {
       ) : (
         <p>No hay usuarios disponibles</p>
       )}
+      <style jsx>{`
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+        th {
+          background-color: #f2f2f2;
+          text-align: left;
+        }
+      `}</style>
     </div>
   );
 };

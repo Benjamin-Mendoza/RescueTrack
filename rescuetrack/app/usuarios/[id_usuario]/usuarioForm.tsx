@@ -15,7 +15,7 @@ interface Usuario {
 }
 
 async function getUsuario(id_usuario: number): Promise<Usuario> {
-  const res = await fetch(`https://rescuedesplegado.onrender.com/usuarios/${id_usuario}`, {
+  const res = await fetch(`http://localhost:8081/usuarios/${id_usuario}`, {
     next: { revalidate: 60 },
   });
 
@@ -27,7 +27,7 @@ async function getUsuario(id_usuario: number): Promise<Usuario> {
 }
 
 async function updateUsuario(id_usuario: number, updatedData: Partial<Usuario>) {
-  const res = await fetch(`https://rescuedesplegado.onrender.com/usuarios/${id_usuario}`, {
+  const res = await fetch(`http://localhost:8081/usuarios/${id_usuario}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -85,9 +85,8 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
       <form onSubmit={handleSubmit} className="form">
         <div className="input-group">
           <div>
-            <label htmlFor="nombre" className="label">Nombre:</label>
+            <label className="label">Nombre:</label>
             <input
-              id="nombre"
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
@@ -95,9 +94,8 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
             />
           </div>
           <div>
-            <label htmlFor="apellido" className="label">Apellido:</label>
+            <label className="label">Apellido:</label>
             <input
-              id="apellido"
               type="text"
               value={apellido}
               onChange={(e) => setApellido(e.target.value)}
@@ -107,9 +105,8 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
         </div>
         <div className="input-group">
           <div>
-            <label htmlFor="email" className="label">Email:</label>
+            <label className="label">Email:</label>
             <input
-              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -117,9 +114,8 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
             />
           </div>
           <div>
-            <label htmlFor="contrasenia" className="label">Contraseña:</label>
+            <label className="label">Contraseña:</label>
             <input
-              id="contrasenia"
               type="password"
               value={contrasenia}
               onChange={(e) => setContrasenia(e.target.value)}
@@ -128,40 +124,39 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
           </div>
         </div>
         <div className="input-group">
-          <div>
-            <label htmlFor="rol" className="label">Rol:</label>
-            <input
-              id="rol"
-              type="text"
-              value={rol}
-              onChange={(e) => setRol(e.target.value)}
-              className="input"
-            />
-          </div>
-          <div>
-            <label htmlFor="compania" className="label">Compañía:</label>
-            <select
-              id="compania"
-              value={compania}
-              onChange={(e) => setCompania(e.target.value)}
-              className="select">
-              <option value="" disabled>Seleccionar Compañía</option>
-              <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA Eduardo Cornou Chabry</option>
-              <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA Zapadores</option>
-              <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA Salvadora y Guardia de la Propiedad</option>
-              <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA Umberto Primo</option>
-              <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA Bomba Chile</option>
-              <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA Salvadora</option>
-              <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA Bomba Almirante Calixto Rogers</option>
-              <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA Bomba Huachipato</option>
-              <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA Juan Guillermo Sosa Severino</option>
-              <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA Bomba San Vicente</option>
-            </select>
-          </div>
+        <div>
+          <label className="label">Rol:</label>
+          <input
+            type="text"
+            value={rol}
+            onChange={(e) => setRol(e.target.value)}
+            className="input"
+          />
         </div>
+        <div>
+          <label className="label">Compañía:</label>
+          <select
+            value={compania}
+            onChange={(e) => setCompania(e.target.value)}
+            className="select">
+            <option value="" disabled>Seleccionar Compañía</option>
+            <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+            <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+            <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+            <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+            <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+            <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+            <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+            <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+            <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+            <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+          </select>
+        </div>
+      </div>
 
         <button type="submit" className="button">Guardar cambios</button>
       </form>
     </div>
   );
 }
+

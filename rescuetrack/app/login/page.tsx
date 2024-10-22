@@ -20,7 +20,7 @@ export default function Login() {
   const handleLogin = async () => {
     setErrorMessage('');
     try {
-      const response = await fetch('https://rescuedesplegado.onrender.com/login', {
+      const response = await fetch('http://localhost:8081/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,10 +58,9 @@ export default function Login() {
             </p>
           )}
           <div className="input">
-            <label htmlFor="email">Email</label>
             <Input
-              id="email"
               type="email"
+              label="Email"
               placeholder="Correo"
               labelPlacement="outside"
               fullWidth
@@ -73,9 +72,8 @@ export default function Login() {
             />
           </div>
           <div className="input">
-            <label htmlFor="password">Contraseña</label>
             <Input
-              id="password"
+              label="Contraseña"
               placeholder="*******"
               labelPlacement="outside"
               fullWidth

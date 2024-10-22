@@ -76,9 +76,8 @@ export default function AgregarVehiculoForm() {
 
       <div className="input-group-row">
         <div className="input-group">
-          <label className="label" htmlFor="patente">Patente:</label>
+          <label className="label">Patente:</label>
           <input
-            id="patente"
             type="text"
             value={patente}
             onChange={(e) => setPatente(e.target.value)}
@@ -87,9 +86,8 @@ export default function AgregarVehiculoForm() {
           />
         </div>
         <div className="input-group">
-          <label className="label" htmlFor="marca">Marca:</label>
+          <label className="label">Marca:</label>
           <input
-            id="marca"
             type="text"
             value={marca}
             onChange={(e) => setMarca(e.target.value)}
@@ -98,9 +96,8 @@ export default function AgregarVehiculoForm() {
           />
         </div>
         <div className="input-group">
-          <label className="label" htmlFor="modelo">Modelo:</label>
+          <label className="label">Modelo:</label>
           <input
-            id="modelo"
             type="text"
             value={modelo}
             onChange={(e) => setModelo(e.target.value)}
@@ -112,9 +109,8 @@ export default function AgregarVehiculoForm() {
 
       <div className="input-group-row">
         <div className="input-group">
-          <label className="label" htmlFor="anio">Año:</label>
+          <label className="label">Año:</label>
           <input
-            id="anio"
             type="number"
             value={anio}
             onChange={(e) => setAnio(Number(e.target.value))}
@@ -123,9 +119,8 @@ export default function AgregarVehiculoForm() {
           />
         </div>
         <div className="input-group">
-          <label className="label" htmlFor="tipo_vehiculo">Tipo de Vehículo:</label>
+          <label className="label">Tipo de Vehículo:</label>
           <select
-            id="tipo_vehiculo"
             value={tipo_vehiculo}
             onChange={(e) => setTipoVehiculo(e.target.value)}
             className="input"
@@ -146,9 +141,8 @@ export default function AgregarVehiculoForm() {
           </select>
         </div>
         <div className="input-group">
-          <label className="label" htmlFor="estado_vehiculo">Estado del Vehículo:</label>
+          <label className="label">Estado del Vehículo:</label>
           <select
-            id="estado_vehiculo"
             value={estado_vehiculo}
             onChange={(e) => setEstadoVehiculo(e.target.value)}
             className="input"
@@ -163,9 +157,8 @@ export default function AgregarVehiculoForm() {
 
       <div className="input-group-row">
         <div className="input-group">
-          <label className="label" htmlFor="kilometraje">Kilometraje:</label>
+          <label className="label">Kilometraje:</label>
           <input
-            id="kilometraje"
             type="number"
             value={kilometraje}
             onChange={(e) => setKilometraje(Number(e.target.value))}
@@ -175,25 +168,24 @@ export default function AgregarVehiculoForm() {
         </div>
 
         <div className="input-group">
-          <label className="label" htmlFor="compania">Compañía:</label>
+          <label className="label">Compañía:</label>
           <select
-            id="compania"
             value={compania}
             onChange={(e) => setCompania(e.target.value)}
             className="input"
             required
           >
-            <option value="" disabled>Seleccionar Compañía</option>
-                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA Eduardo Cornou Chabry</option>
-                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA Zapadores</option>
-                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA Salvadora y Guardia de la Propiedad</option>
-                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA Umberto Primo</option>
-                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA Bomba Chile</option>
-                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA Salvadora</option>
-                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA Bomba Almirante Calixto Rogers</option>
-                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA Bomba Huachipato</option>
-                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA Juan Guillermo Sosa Severino</option>
-                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA Bomba San Vicente</option>
+                <option value="" disabled>Seleccionar Compañía</option>
+                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
+                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
+                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
+                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
+                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
           </select>
         </div>
       </div>
@@ -202,3 +194,10 @@ export default function AgregarVehiculoForm() {
     </form>
   );
 }
+
+
+
+
+
+
+
