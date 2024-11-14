@@ -2,6 +2,7 @@
   import FontAwesome from '@expo/vector-icons/FontAwesome';
   import { Link, Tabs } from 'expo-router';
   import { Pressable } from 'react-native';
+  import AntDesign from '@expo/vector-icons/AntDesign';
 
   import Colors from '@/constants/Colors';
   import { useColorScheme } from '@/components/useColorScheme';
@@ -30,17 +31,12 @@
           name="index"
           options={{
             title: 'Tab One',
-            tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+            tabBarIcon: ({ color }) => <AntDesign name="home" size={24}  color={color} />,
             headerRight: () => (
-              <Link href="/modal" asChild>
+              <Link href="/notification" asChild>
                 <Pressable>
                   {({ pressed }) => (
-                    <FontAwesome
-                      name="info-circle"
-                      size={25}
-                      color={Colors[colorScheme ?? 'light'].text}
-                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                    />
+                    <AntDesign name="bells" size={24} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
                   )}
                 </Pressable>
               </Link>
@@ -51,21 +47,21 @@
           name="two"
           options={{
             title: 'Tab Two',
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            tabBarIcon: ({ color }) => <AntDesign name="car" size={24} color={color} />,
           }}
         />
         <Tabs.Screen
           name="three"
           options={{
             title: 'Tab Three',
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            tabBarIcon: ({ color }) => <AntDesign name="pdffile1" size={24} color={color}/>,
           }}
         />
           <Tabs.Screen
             name="four"
             options={{
               title: 'Tab Four',
-              tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+              tabBarIcon: ({ color }) => <AntDesign name="clockcircleo" size={24} color={color} />,
             }}
           />
         
