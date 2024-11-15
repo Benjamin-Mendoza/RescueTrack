@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './vehiculos.css';
@@ -13,35 +12,71 @@ interface Vehiculo {
   tipo_vehiculo: string;
   estado_vehiculo: string;
   kilometraje: number;
-  compania: string;
+  id_compania: number;
 }
 
 async function getVehiculos() {
-  const res = await fetch('http://localhost:8081/vehiculos', { cache: 'no-store' });
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token no disponible. El usuario no está autenticado.');
+  }
+
+  const res = await fetch('http://localhost:8081/vehiculos', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status === 401) {
+    throw new Error('No autorizado. Verifica que el token es válido y tiene permisos.');
+  }
+
   if (!res.ok) {
     throw new Error('Failed to fetch vehicles');
   }
+
   return res.json();
 }
 
 export default function VehiculosPage() {
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
   const [filtroEstado, setFiltroEstado] = useState('');
-  const [filtroCompania, setFiltroCompania] = useState('');
-
+  const [userCompanyId, setUserCompanyId] = useState<number | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchVehiculos = async () => {
-      const data = await getVehiculos();
-      setVehiculos(data);
-    };
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+      router.push('/login');
+      return;
+    }
 
+    const fetchVehiculos = async () => {
+      try {
+        const data = await getVehiculos();
+        setVehiculos(data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+          if (error.message.includes('No autorizado')) {
+            alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+            router.push('/login');
+          }
+        }
+      }
+    };
     fetchVehiculos();
-  }, []);
+  }, [router]);
 
   const handleVerDetalles = (id_vehiculo: number) => {
     router.push(`/vehiculos/${id_vehiculo}`);
+  };
+
+  const handleVerMantenimientos = (id_vehiculo: number) => {
+    router.push(`/mantencion/${id_vehiculo}`);
   };
 
   const irAAgregarVehiculo = () => {
@@ -52,62 +87,46 @@ export default function VehiculosPage() {
     setFiltroEstado(e.target.value);
   };
 
-  const handleFiltroCompaniaCambio = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFiltroCompania(e.target.value);
-  };
-
   const handleEliminarVehiculo = async (id_vehiculo: number) => {
     if (confirm('¿Estás seguro de que deseas eliminar este vehículo?')) {
       try {
         await deleteVehiculo(id_vehiculo);
         alert('Vehículo eliminado con éxito');
         setVehiculos((prev) => prev.filter((vehiculo) => vehiculo.id_vehiculo !== id_vehiculo));
-      } catch (error) {
-        console.error(error);
-        alert('Error al eliminar el vehículo: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Error al eliminar el vehículo:', error.message);
+          alert('Error al eliminar el vehículo: ' + error.message);
+        } else {
+          console.error('Error desconocido:', error);
+          alert('Error desconocido al eliminar el vehículo.');
+        }
       }
     }
   };
 
   const vehiculosFiltrados = vehiculos
-    .filter(vehiculo => (filtroEstado ? vehiculo.estado_vehiculo === filtroEstado : true))
-    .filter(vehiculo => (filtroCompania ? vehiculo.compania === filtroCompania : true));
+    .filter((vehiculo) => userCompanyId === null || vehiculo.id_compania === userCompanyId)
+    .filter((vehiculo) => (filtroEstado ? vehiculo.estado_vehiculo === filtroEstado : true));
 
   return (
     <div className="container">
-
-      <div className="filtros-container">
-        <div className="filtro-item">
-          <label htmlFor="filtroEstado" className="filtro-label">Filtrar por Estado:</label>
-          <select id="filtroEstado" value={filtroEstado} onChange={handleFiltroEstadoCambio} className="filtro-select">
-            <option value="">Todos</option>
-            <option value="Operativo">Operativo</option>
-            <option value="En Mantención">En Mantención</option>
-          </select>
-        </div>
-
-        <div className="filtro-item">
-          <label htmlFor="filtroCompania" className="filtro-label">Filtrar por Compañía:</label>
-          <select id="filtroCompania" value={filtroCompania} onChange={handleFiltroCompaniaCambio} className="filtro-select">
-          <option value="">Todas</option>
-                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA</option>
-                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA</option>
-                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA</option>
-                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA</option>
-                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA</option>
-                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA</option>
-                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA</option>
-                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA</option>
-                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA</option>
-                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA</option>
-          </select>
-        </div>
-      </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
         <button className="button-agregar" onClick={irAAgregarVehiculo}>
           Agregar vehículo
         </button>
+      </div>
+
+      <div className="filtros">
+        <label>
+          Estado:
+          <select value={filtroEstado} onChange={handleFiltroEstadoCambio}>
+            <option value="">Todos</option>
+            <option value="En Mantención">En Mantención</option>
+            <option value="Operativo">Operativo</option>
+          </select>
+        </label>
       </div>
 
       <table className="table">
@@ -117,10 +136,9 @@ export default function VehiculosPage() {
             <th>Marca</th>
             <th>Modelo</th>
             <th>Año</th>
-            <th>Tipo Vehiculo</th>
-            <th>Estado Vehiculo</th>
+            <th>Tipo</th>
+            <th>Estado</th>
             <th>Kilometraje</th>
-            <th>Compañía</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -134,14 +152,16 @@ export default function VehiculosPage() {
               <td>{vehiculo.tipo_vehiculo}</td>
               <td>{vehiculo.estado_vehiculo}</td>
               <td>{vehiculo.kilometraje}</td>
-              <td>{vehiculo.compania}</td>
-              <td className="table-actions">
-                <button onClick={() => handleVerDetalles(vehiculo.id_vehiculo)} className="button-editar">
+              <td>
+              <button onClick={() => handleVerDetalles(vehiculo.id_vehiculo)} className="button">
                   Editar
                 </button>
 
                 <button onClick={() => handleEliminarVehiculo(vehiculo.id_vehiculo)} className="button-eliminar">
                   Eliminar
+                </button>
+                <button onClick={() => handleVerMantenimientos(vehiculo.id_vehiculo)} className="button-mantencion">
+                  Mantenciones
                 </button>
               </td>
             </tr>
@@ -153,23 +173,19 @@ export default function VehiculosPage() {
 }
 
 async function deleteVehiculo(id_vehiculo: number) {
-  const res = await fetch(`http://localhost:8081/deletevehiculo/${id_vehiculo}`, {
-    method: 'DELETE',
-  });
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`http://localhost:8081/deletevehiculo/${id_vehiculo}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
 
-  const contentType = res.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
-    const errorData = await res.json();
     if (!res.ok) {
+      throw new Error('Failed to delete vehicle');
     }
-    return errorData;
-  } else {
-    const errorText = await res.text(); 
-    throw new Error(`Error no JSON: ${errorText}`);
+  } catch (error) {
+    console.error('Error:', error);
   }
 }
-
-
-
-
-

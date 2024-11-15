@@ -47,10 +47,34 @@ export function SideNav() {
           <Link
             href="/lista"
             className={`p-4 text-xl font-bold ${
-              pathname === '/vehiculos' ? 'bg-zinc-100' : ''
+              pathname === '/vehículos' ? 'bg-zinc-100' : ''
             } w-full text-center text-white`}
           >
             Vehículos
+          </Link>
+
+          <div className="w-full border-t border-white"></div>
+
+          
+          <Link
+            href="/historial"
+            className={`p-4 text-xl font-bold ${
+              pathname === '/historial' ? 'bg-zinc-100' : ''
+            } w-full text-center text-white`}
+          >
+            Historial Mantenciones
+          </Link>
+
+          <div className="w-full border-t border-white"></div>
+
+          
+          <Link
+            href="/logout"
+            className={`p-4 text-xl font-bold ${
+              pathname === '/logout' ? 'bg-zinc-100' : ''
+            } w-full text-center text-white`}
+          >
+            Cerrar sesion
           </Link>
         </div>
       </div>

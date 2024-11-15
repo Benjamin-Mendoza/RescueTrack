@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { SideNavItem } from './types';
 
 
+
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: 'Inicio',
@@ -18,5 +19,15 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: 'Vehiculos',
     path: '/lista',
     icon: <Icon icon="lucide:truck" width="24" height="24" />,
+  },
+  {
+    title: 'Historial Mantenciones',
+    path: '/historial',
+    icon: <Icon icon="lucide:truck" width="24" height="24" />,
+  },
+  {
+    title: 'Cerrar Sesión',
+    path: '/logout', 
+    icon: <Icon icon="lucide:log-out" width="24" height="24" />,
   },
 ];

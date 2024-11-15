@@ -7,9 +7,11 @@ async function deleteVehiculo(id_vehiculo: number) {
   });
 
   if (!res.ok) {
-    const errorData = await res.json(); 
-
+    const errorData = await res.json();
+    throw new Error(errorData.error || 'Error desconocido');
   }
-  return res.json();
+
+  return res.json();  // Devuelve la respuesta si todo fue correcto
 }
+
 

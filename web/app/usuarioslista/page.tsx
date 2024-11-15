@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import './usuario.css'; // Importamos el archivo CSS
+import './usuario.css'; 
 
 interface Usuario {
   id_usuario: number;
@@ -10,16 +10,29 @@ interface Usuario {
   email: string;
   contrasenia: string;
   rol: string;
-  compania: number;
+  id_compania: number;
 }
 
 async function getUsuarios() {
-  const res = await fetch('http://localhost:8081/usuarios', { cache: 'no-store' });
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  const res = await fetch('http://localhost:8081/usuarios', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
   if (!res.ok) {
     throw new Error('Error al obtener los usuarios');
   }
   return res.json();
 }
+
 
 async function deleteUsuario(id_usuario: number) {
   const res = await fetch(`http://localhost:8081/deleteuser/${id_usuario}`, {
@@ -35,20 +48,33 @@ async function deleteUsuario(id_usuario: number) {
 export default function UsuariosPage() {
   const router = useRouter();
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [userCompanyId, setUserCompanyId] = useState<number | null>(null);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+      router.push('/login');
+      return;
+    }
+
     const fetchUsuarios = async () => {
       try {
         const usuarios = await getUsuarios();
         setUsuarios(usuarios);
-      } catch (error) {
-        console.error('Error al cargar usuarios:', error);
-        alert('Error al cargar usuarios: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+          if (error.message.includes('No autorizado')) {
+            alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+            router.push('/login');
+          }
+        }
       }
     };
 
     fetchUsuarios();
-  }, []);
+  }, [router]);
 
   const handleVerDetalles = (id_usuario: number) => {
     router.push(`/usuarios/${id_usuario}`);
@@ -72,6 +98,10 @@ export default function UsuariosPage() {
     router.push('/registro');
   };
 
+  const usuariosFiltrados = usuarios.filter(usuario => 
+    userCompanyId === null || usuario.id_compania === userCompanyId
+  );
+
   return (
     <div className="container">
       <div className="header-button">
@@ -92,13 +122,13 @@ export default function UsuariosPage() {
           </tr>
         </thead>
         <tbody>
-          {usuarios.map((usuario) => (
+          {usuariosFiltrados.map((usuario) => (
             <tr key={usuario.id_usuario}>
               <td>{usuario.nombre}</td>
               <td>{usuario.apellido}</td>
               <td>{usuario.email}</td>
               <td>{usuario.rol}</td>
-              <td>{usuario.compania}</td>
+              <td>{usuario.id_compania}</td>
               <td className="table-actions">
                 <button
                   onClick={() => handleVerDetalles(usuario.id_usuario)}

@@ -59,7 +59,7 @@
   gap: 10px;
 }
 
-.button-editar {
+.button{
   background-color: #154780;
   color: white;
   padding: 10px 15px;
@@ -70,6 +70,15 @@
 
 .button-eliminar {
   background-color: #f44336;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-mantencion{
+  background-color: #154780;
   color: white;
   padding: 10px 15px;
   border: none;

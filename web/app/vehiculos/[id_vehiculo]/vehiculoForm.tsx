@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation'; 
 import './editar.css'; 
@@ -48,6 +47,17 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (kilometraje < vehiculo.kilometraje) {
+      alert('El kilometraje no puede ser menor al kilometraje actual');
+      return;
+    }
+
+    if (kilometraje > 500000) {
+      alert('El kilometraje no puede ser mayor a 500,000');
+      return;
+    }
+
     try {
       await updateVehiculo(vehiculo.id_vehiculo, { estado_vehiculo, kilometraje });
       alert('Vehículo actualizado con éxito');
@@ -55,7 +65,7 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
       const updatedVehiculo = { ...vehiculo, estado_vehiculo, kilometraje };
       setVehiculo(updatedVehiculo);
       
-      router.push('/lista'); 
+      router.push('/lista');
     } catch (error) {
       console.error('Error en la actualización:', error);
       alert('Error al actualizar el vehículo');
@@ -93,5 +103,6 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
     </div>
   );
 }
+
 
 

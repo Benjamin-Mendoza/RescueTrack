@@ -27,14 +27,17 @@ export default function Login() {
         },
         body: JSON.stringify({ email, contrasenia: password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
-        if (data.rol === 'secretario') {
-          router.push('/home');
+        if (data.token) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', data.token);  // Guarda el token en el cliente
+          }
+          router.replace('/home'); // Redirige a la página de inicio
         } else {
-          setErrorMessage('Acceso denegado. Solo los secretarios pueden acceder.');
+          setErrorMessage('Token no encontrado.');
         }
       } else {
         setErrorMessage(data.error || 'Error en el login');
@@ -44,7 +47,8 @@ export default function Login() {
       console.error('Error en la petición:', error);
     }
   };
-
+  
+  
   return (
     <div className="c1">
       <div className="c2">
@@ -102,3 +106,4 @@ export default function Login() {
     </div>
   );
 }
+

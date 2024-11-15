@@ -12,7 +12,7 @@ interface Vehiculo {
   tipo_vehiculo: string;
   estado_vehiculo: string;
   kilometraje: number;
-  compania: string;
+  id_compania: number;
 }
 
 async function createVehiculo(newVehiculo: Vehiculo) {
@@ -35,12 +35,22 @@ export default function AgregarVehiculoForm() {
   const [tipo_vehiculo, setTipoVehiculo] = useState('');
   const [estado_vehiculo, setEstadoVehiculo] = useState('');
   const [kilometraje, setKilometraje] = useState<number | ''>('');
-  const [compania, setCompania] = useState('');
+  const [id_compania, setCompania] = useState('');
 
   const router = useRouter(); 
+  const currentYear = new Date().getFullYear();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !patente || !marca || !modelo || !anio || !tipo_vehiculo || 
+      !estado_vehiculo || !kilometraje || !id_compania
+    ) {
+      alert('Todos los campos son obligatorios');
+      return;
+    }
+
     try {
       const newVehiculo: Vehiculo = {
         patente,
@@ -50,7 +60,7 @@ export default function AgregarVehiculoForm() {
         tipo_vehiculo,
         estado_vehiculo,
         kilometraje: Number(kilometraje),
-        compania,
+        id_compania: Number(id_compania),
       };
 
       await createVehiculo(newVehiculo);
@@ -70,6 +80,62 @@ export default function AgregarVehiculoForm() {
     }
   };
 
+  const handlePatenteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.toUpperCase();
+    input = input.replace(/[^A-Z0-9]/g, ''); 
+    if (input.length <= 6) { 
+      setPatente(input);
+    }
+  };
+
+  const handleMarcaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.toUpperCase();
+    input = input.replace(/[^a-zA-Z\s]/g, '');
+    if (input.length <= 15) { 
+      setMarca(input);
+    }
+  };
+
+  const handleModeloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.toUpperCase();
+    input = input.replace(/[^A-Z0-9]/g, ''); 
+    if (input.length <= 15) {
+      setModelo(input);
+    }
+  };
+
+  const handleAnioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+  
+    if (value === '') {
+      setAnio(''); 
+    } else if (/^\d{1,4}$/.test(value)) { 
+      const year = Number(value);
+    
+      if (value.length === 4) {
+        if (year >= 1990 && year <= currentYear) {
+          setAnio(year)
+        } else {
+          alert(`El año debe estar entre 1990 y ${currentYear}`);
+          setAnio('');
+        }
+      } else {
+        setAnio(Number(value)); 
+      }
+    }
+  };
+  
+const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = Number(e.target.value);
+  if (value > 0 && value <= 500000) {
+    setKilometraje(value);
+  } else {
+    setKilometraje(''); 
+    alert('El kilometraje debe estar entre 1 y 500,000 km');
+  }
+};
+
+
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <h2 className="form-header">Agregar Vehículo</h2>
@@ -80,7 +146,7 @@ export default function AgregarVehiculoForm() {
           <input
             type="text"
             value={patente}
-            onChange={(e) => setPatente(e.target.value)}
+            onChange={handlePatenteChange}
             className="input"
             required
           />
@@ -90,7 +156,7 @@ export default function AgregarVehiculoForm() {
           <input
             type="text"
             value={marca}
-            onChange={(e) => setMarca(e.target.value)}
+            onChange={handleMarcaChange}
             className="input"
             required
           />
@@ -100,7 +166,7 @@ export default function AgregarVehiculoForm() {
           <input
             type="text"
             value={modelo}
-            onChange={(e) => setModelo(e.target.value)}
+            onChange={handleModeloChange}
             className="input"
             required
           />
@@ -113,7 +179,7 @@ export default function AgregarVehiculoForm() {
           <input
             type="number"
             value={anio}
-            onChange={(e) => setAnio(Number(e.target.value))}
+            onChange={handleAnioChange}
             className="input"
             required
           />
@@ -161,7 +227,7 @@ export default function AgregarVehiculoForm() {
           <input
             type="number"
             value={kilometraje}
-            onChange={(e) => setKilometraje(Number(e.target.value))}
+            onChange={handleKilometrajeChange}
             className="input"
             required
           />
@@ -170,22 +236,22 @@ export default function AgregarVehiculoForm() {
         <div className="input-group">
           <label className="label">Compañía:</label>
           <select
-            value={compania}
+            value={id_compania}
             onChange={(e) => setCompania(e.target.value)}
             className="input"
             required
           >
-                <option value="" disabled>Seleccionar Compañía</option>
-                <option value="PRIMERA COMPAÑÍA">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-                <option value="SEGUNDA COMPAÑÍA">SEGUNDA COMPAÑÍA "Zapadores"</option>
-                <option value="TERCERA COMPAÑÍA">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-                <option value="CUARTA COMPAÑÍA">CUARTA COMPAÑÍA "Umberto Primo"</option>
-                <option value="QUINTA COMPAÑÍA">QUINTA COMPAÑÍA "Bomba Chile"</option>
-                <option value="SEXTA COMPAÑÍA">SEXTA COMPAÑÍA "Salvadora"</option>
-                <option value="SÉPTIMA COMPAÑÍA">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-                <option value="OCTAVA COMPAÑÍA">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-                <option value="NOVENA COMPAÑÍA">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-                <option value="UNDÉCIMA COMPAÑÍA">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+            <option value="" disabled>Seleccionar Compañía</option>
+            <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+            <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
+            <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+            <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
+            <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
+            <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
+            <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
+            <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
+            <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
+            <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
           </select>
         </div>
       </div>
@@ -194,10 +260,3 @@ export default function AgregarVehiculoForm() {
     </form>
   );
 }
-
-
-
-
-
-
-
