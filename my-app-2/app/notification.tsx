@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Button, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/app/supabaseClient';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-// Definir el tipo para las notificaciones
 interface Notificacion {
   id_notificacion: number;
   id_vehiculo: number;
@@ -11,7 +11,7 @@ interface Notificacion {
   mensaje: string;
   fecha_notificacion: string;
   estado_notificacion: 'Pendiente' | 'Vista';
-  patente?: string;  // Nuevo campo para la patente
+  patente?: string;
 }
 
 // Función para obtener todas las notificaciones
@@ -29,7 +29,7 @@ const obtenerNotificaciones = async (): Promise<Notificacion[]> => {
   // Asignar la patente a cada notificación
   const notificacionesConPatente = data?.map((notificacion) => ({
     ...notificacion,
-    patente: notificacion.vehiculo?.patente,  // Obtener la patente
+    patente: notificacion.vehiculo?.patente, // Obtener la patente
   })) ?? [];
 
   return notificacionesConPatente;
@@ -55,7 +55,7 @@ const separarNotificaciones = (notificaciones: Notificacion[]) => {
 
   const actuales = notificaciones.filter((notificacion) => {
     const fecha = new Date(notificacion.fecha_notificacion);
-    return notificacion.estado_notificacion === 'Vista' && fecha >= haceUnaSemana;
+    return notificacion.estado_notificacion === 'Pendiente' && fecha >= haceUnaSemana;
   });
 
   const semanaPasada = notificaciones.filter((notificacion) => {
@@ -87,7 +87,7 @@ export default function ModalScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Centro de Notificaciones</Text>
-      
+
       {/* Sección de Notificaciones Actuales */}
       <Text style={styles.sectionTitle}>Notificaciones Actuales</Text>
       {actuales.length > 0 ? (
@@ -95,15 +95,20 @@ export default function ModalScreen() {
           <View key={notificacion.id_notificacion} style={styles.notification}>
             <Text>{notificacion.mensaje}</Text>
             <Text style={styles.date}>{new Date(notificacion.fecha_notificacion).toLocaleString()}</Text>
-            {notificacion.patente && (
-              <Text style={styles.patente}>
-                Vehículo: {notificacion.patente}
-              </Text>
+            {notificacion.estado_notificacion === 'Pendiente' && (
+              <View style={styles.iconContainer}>
+                <AntDesign 
+                  name="check" 
+                  size={30} 
+                  color="#6EC207" 
+                  onPress={() => marcarComoLeida(notificacion.id_notificacion)} 
+                />
+              </View>
             )}
           </View>
         ))
       ) : (
-        <Text>No hay notificaciones actuales</Text>
+        <Text>No hay notificaciones</Text>
       )}
 
       {/* Sección de Notificaciones Semana Pasada */}
@@ -113,24 +118,10 @@ export default function ModalScreen() {
           <View key={notificacion.id_notificacion} style={styles.notification}>
             <Text>{notificacion.mensaje}</Text>
             <Text style={styles.date}>{new Date(notificacion.fecha_notificacion).toLocaleString()}</Text>
-            {notificacion.patente && (
-              <Text style={styles.patente}>
-                Vehículo: {notificacion.patente}
-              </Text>
-            )}
-            {notificacion.estado_notificacion === 'Pendiente' && (
-              <View style={styles.buttonContainer}>
-                <Button 
-                  title="Marcar como leída" 
-                  onPress={() => marcarComoLeida(notificacion.id_notificacion)} 
-                  color="#007bff" 
-                />
-              </View>
-            )}
           </View>
         ))
       ) : (
-        <Text>No hay notificaciones de la semana pasada</Text>
+        <Text>No hay notificaciones</Text>
       )}
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
@@ -171,9 +162,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#555',
   },
-  buttonContainer: {
-    marginTop: 10, 
-    width: '100%', 
+  iconContainer: {
+    marginTop: 10,
+    alignItems: 'center', // Alinea el ícono a la derecha
   },
   patente: {
     fontSize: 14,

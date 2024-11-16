@@ -17,19 +17,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF', // Color de fondo suave
+    backgroundColor: '#FFFFFF', 
     padding: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333', // Color del texto
+    color: '#333', 
   },
   subtitle: {
     fontSize: 18,
     marginBottom: 20,
-    color: '#666', // Color del texto secundario
+    color: '#666', 
   },
   separator: {
     marginVertical: 30,

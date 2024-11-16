@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions, StyleSheet, ScrollView, Button, Alert, Pressable, TouchableOpacity } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
+import { BarChart, LineChart  } from 'react-native-chart-kit';
 import { supabase } from '@/app/supabaseClient';
 import { PDFDocument, rgb } from 'pdf-lib';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
-// Define la interfaz para las mantenciones
+
 interface Maintenance {
   id_mantencion: number;
   id_vehiculo: number;
@@ -61,7 +61,8 @@ const MaintenanceCostChart = () => {
         .from('mantencion')
         .select('*', { count: 'exact' })
         .gte('fecha_mantencion', `${year}-01-01`)
-        .lte('fecha_mantencion', `${year}-12-31`);
+        .lte('fecha_mantencion', `${year}-12-31`)
+        .eq('estado_mantencion', 'Completada');;
 
       if (cantidadError) console.error('Error fetching maintenance count:', cantidadError);
       else setCantidadMantenimientos(cantidadData?.length || 0);
@@ -165,8 +166,15 @@ const MaintenanceCostChart = () => {
       </View>
 
       <Text style={styles.title2}>Costo de Mantenciones Trimestral - {new Date().getFullYear()}</Text>
-      <BarChart
-        data={{ ...chartData, datasets: [{ data: formattedData }] }}
+      <LineChart
+        data={{
+          labels: ['0', ...data.map((item, index) => `T${item.trimestre || index + 1}`)],
+          datasets: [
+            {
+              data: [0, ...formattedData],
+            },
+          ],
+        }}
         width={Dimensions.get('window').width - 40}
         height={300}
         yAxisLabel="$"
@@ -179,7 +187,13 @@ const MaintenanceCostChart = () => {
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           style: { borderRadius: 16 },
+          propsForDots: {
+            r: '6',
+            strokeWidth: '2',
+            stroke: '#ffa726',
+          },
         }}
+        bezier
         style={styles.chart}
       />
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Alert, TextInput, StyleSheet, Text } from 'react-native';
+import { Button, View, Alert, StyleSheet, Text, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
 import * as Notifications from 'expo-notifications';
 import { supabase } from '@/app/supabaseClient';
 
@@ -35,7 +36,7 @@ const ScheduleMaintenanceButton = () => {
     try {
       const { data: vehiculoData, error: vehiculoError } = await supabase
         .from('vehiculo')
-        .select('id_vehiculo, patente') // Obtener la patente aquí
+        .select('id_vehiculo, patente')
         .eq('patente', patente)
         .single();
 
@@ -60,14 +61,14 @@ const ScheduleMaintenanceButton = () => {
 
       const notificationDate = new Date(date);
       notificationDate.setDate(notificationDate.getDate() - 1);
+      notificationDate.setHours(9, 0, 0, 0);
 
-      // Aquí, ahora tienes acceso a la patente
       const patenteVehiculo = vehiculoData.patente;
 
       await Notifications.scheduleNotificationAsync({
         content: {
           title: 'Recordatorio de Mantención',
-          body: `Recuerda que tienes una mantención programada para mañana ${date.toISOString().split('T')[0]} para el vehículo con patente ${patenteVehiculo}`,
+          body: `Recuerda que tienes una mantención programada para el día ${date.toISOString().split('T')[0]} para el vehículo con patente ${patenteVehiculo}`,
         },
         trigger: { date: notificationDate },
       });
@@ -88,9 +89,7 @@ const ScheduleMaintenanceButton = () => {
         throw new Error(notificationError.message);
       }
 
-      Alert.alert('Éxito', 'Mantención programada y notificación creada y registrada.');
-
-      // Limpia los campos
+      Alert.alert('Éxito', 'Mantención programada.');
       setPatente('');
       setTipoMantencion('');
       setDate(null);
@@ -110,12 +109,16 @@ const ScheduleMaintenanceButton = () => {
           onChangeText={setPatente}
           style={styles.input}
         />
-        <TextInput
-          placeholder="Tipo de Mantención"
-          value={tipoMantencion}
-          onChangeText={setTipoMantencion}
-          style={styles.input}
-        />
+        <Text style={styles.label}>Tipo de Mantención:</Text>
+        <Picker
+          selectedValue={tipoMantencion}
+          onValueChange={(value) => setTipoMantencion(value)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Seleccione un tipo" value="" />
+          <Picker.Item label="Correctiva" value="Correctiva" />
+          <Picker.Item label="Preventiva" value="Preventiva" />
+        </Picker>
         <Button title="Seleccionar Fecha de Mantención" onPress={() => setShowPicker(true)} />
         {showPicker && (
           <DateTimePicker
@@ -162,6 +165,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     padding: 8,
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  picker: {
+    height: 50,
     marginBottom: 15,
   },
   buttonContainer: {

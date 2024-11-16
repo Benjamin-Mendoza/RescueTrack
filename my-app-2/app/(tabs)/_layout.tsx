@@ -3,6 +3,7 @@
   import { Link, Tabs } from 'expo-router';
   import { Pressable } from 'react-native';
   import AntDesign from '@expo/vector-icons/AntDesign';
+  import Feather from '@expo/vector-icons/Feather';
 
   import Colors from '@/constants/Colors';
   import { useColorScheme } from '@/components/useColorScheme';
@@ -30,13 +31,13 @@
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Tab One',
+            title: 'Inicio',
             tabBarIcon: ({ color }) => <AntDesign name="home" size={24}  color={color} />,
             headerRight: () => (
               <Link href="/notification" asChild>
                 <Pressable>
                   {({ pressed }) => (
-                    <AntDesign name="bells" size={24} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
+                    <Feather name="bell" size={24} color="black"  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
                   )}
                 </Pressable>
               </Link>
@@ -46,22 +47,22 @@
         <Tabs.Screen
           name="two"
           options={{
-            title: 'Tab Two',
+            title: 'Vehículos',
             tabBarIcon: ({ color }) => <AntDesign name="car" size={24} color={color} />,
           }}
         />
         <Tabs.Screen
           name="three"
           options={{
-            title: 'Tab Three',
-            tabBarIcon: ({ color }) => <AntDesign name="pdffile1" size={24} color={color}/>,
+            title: 'Costos',
+            tabBarIcon: ({ color }) => <Feather name="dollar-sign" size={24} color={color} />,
           }}
         />
           <Tabs.Screen
             name="four"
             options={{
-              title: 'Tab Four',
-              tabBarIcon: ({ color }) => <AntDesign name="clockcircleo" size={24} color={color} />,
+              title: 'Programar',
+              tabBarIcon: ({ color }) => <AntDesign name="calendar" size={24} color={color} />,
             }}
           />
         

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
-import { supabase } from '@/app/supabaseClient'; // Ajusta la ruta según tu estructura
+import { supabase } from '@/app/supabaseClient';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Picker } from '@react-native-picker/picker';
+
+interface Company {
+  id_compania: number;
+  nombre: string;
+}
 
 interface Vehicle {
   id_vehiculo: number;
@@ -9,9 +15,10 @@ interface Vehicle {
   marca: string;
   tipo_vehiculo: string;
   estado_vehiculo: string;
-  compania: string;
+  compania: Company | null;
   kilometraje: number;
 }
+
 
 interface Maintenance {
   id_mantencion: number;
@@ -32,21 +39,70 @@ export default function TabTwoScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editMaintenanceModalVisible, setEditMaintenanceModalVisible] = useState(false);
   const [currentMaintenance, setCurrentMaintenance] = useState<Maintenance | null>(null);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
+  const [addMaintenanceModalVisible, setAddMaintenanceModalVisible] = useState(false);
+  const [newMaintenance, setNewMaintenance] = useState<Maintenance | null>(null);
+
+const handleAddMaintenance = () => {
+  setNewMaintenance({
+    id_mantencion: 0,
+    id_vehiculo: selectedVehicle?.id_vehiculo || 0,
+    tipo_mantencion: '',
+    fecha_mantencion: '',
+    descripcion: '',
+    costo: 0,
+    estado_mantencion: '',
+    horas_trabajo: 0,
+  });
+  setAddMaintenanceModalVisible(true); // Abre el modal para agregar mantenimiento
+};
+
+const closeAddMaintenanceModal = () => {
+  setAddMaintenanceModalVisible(false);
+  setNewMaintenance(null);
+};
+
+const saveNewMaintenance = async () => {
+  if (!newMaintenance || !selectedVehicle) return;
+
+  const { error } = await supabase.from('mantencion').insert([
+    {
+      id_vehiculo: selectedVehicle.id_vehiculo,
+      tipo_mantencion: newMaintenance.tipo_mantencion,
+      fecha_mantencion: newMaintenance.fecha_mantencion,
+      descripcion: newMaintenance.descripcion,
+      costo: newMaintenance.costo,
+      estado_mantencion: newMaintenance.estado_mantencion,
+      horas_trabajo: newMaintenance.horas_trabajo,
+    },
+  ]);
+
+  if (error) {
+    console.error('Error adding maintenance:', error);
+  } else {
+    fetchMaintenances(selectedVehicle.id_vehiculo); // Refresca la lista de mantenciones
+    closeAddMaintenanceModal(); // Cierra el modal
+  }
+};
+
 
   useEffect(() => {
     const fetchVehicles = async () => {
-      const { data, error } = await supabase.from<Vehicle>('vehiculo').select('*');
+      const { data, error } = await supabase
+        .from('vehiculo')
+        .select('id_vehiculo, patente, marca, tipo_vehiculo, estado_vehiculo, kilometraje, compania(id_compania, nombre)'); // Incluye el nombre de la compañía
+  
       if (error) {
         console.error('Error fetching vehicles:', error);
       } else {
         setVehicles(data || []);
-        setFilteredVehicles(data || []); // Inicialmente, todos los vehículos son visibles
+        setFilteredVehicles(data || []);
       }
     };
-
+  
     fetchVehicles();
   }, []);
+  
 
   // Función para filtrar los vehículos
   const handleSearch = (text: string) => {
@@ -134,11 +190,11 @@ export default function TabTwoScreen() {
         style={styles.searchInput}
         placeholder="Buscar por patente..."
         value={searchTerm}
-        onChangeText={handleSearch} // Maneja el cambio de texto
+        onChangeText={handleSearch} 
       />
 
       <FlatList
-        data={filteredVehicles} // Usa los vehículos filtrados
+        data={filteredVehicles} 
         keyExtractor={(item) => item.id_vehiculo.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleVehiclePress(item)} style={styles.vehicleContainer}>
@@ -147,7 +203,7 @@ export default function TabTwoScreen() {
               <Text style={styles.vehicleText}>Marca: {item.marca}</Text>
               <Text style={styles.vehicleText}>Tipo: {item.tipo_vehiculo}</Text>
               <Text style={styles.vehicleText}>Estado: {item.estado_vehiculo}</Text>
-              <Text style={styles.vehicleText}>{item.compania} </Text>
+              <Text style={styles.vehicleText}>{item.compania?.nombre}</Text>
             </View>
             <View>
               <AntDesign name="rightcircleo" size={24} color="#868486" />
@@ -159,7 +215,7 @@ export default function TabTwoScreen() {
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Mantenciones de {selectedVehicle?.patente}</Text>
           <FlatList
-            data={maintenances} // Muestra todas las mantenciones, no solo las pendientes
+            data={maintenances}
             keyExtractor={(item) => item.id_mantencion.toString()}
             renderItem={({ item }) => (
               <View style={styles.maintenanceContainer}>
@@ -170,7 +226,7 @@ export default function TabTwoScreen() {
                 <Text style={styles.maintenanceText}>Estado: {item.estado_mantencion}</Text>
                 <Text style={styles.maintenanceText}>Horas de Trabajo: {item.horas_trabajo}</Text>
 
-                {/* Ícono de editar alineado a la derecha */}
+                {/* Ícono de editar */}
                 {item.estado_mantencion === 'Pendiente' && (
                   <TouchableOpacity onPress={() => handleEditMaintenance(item)} style={styles.editIconContainer}>
                     <AntDesign name="edit" size={24} color="black" />
@@ -179,14 +235,77 @@ export default function TabTwoScreen() {
               </View>
             )}
           />
+          <TouchableOpacity onPress={handleAddMaintenance} style={styles.addMaintenanceButton}>
+            <Text style={styles.addMaintenanceButtonText}>Agregar Nueva Mantención</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Cerrar</Text>
           </TouchableOpacity>
         </View>
       </Modal>
+
+      <Modal visible={addMaintenanceModalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Agregar Nueva Mantención</Text>
+
+          {/* Formulario para ingresar datos de la nueva mantención */}
+          <TextInput
+            style={styles.input}
+            placeholder="Tipo de Mantención"
+            value={newMaintenance?.tipo_mantencion || ''}
+            onChangeText={(text) => handleInputChange('tipo_mantencion', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Fecha de Mantención (YYYY-MM-DD)"
+            value={newMaintenance?.fecha_mantencion || ''}
+            onChangeText={(text) => handleInputChange('fecha_mantencion', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Descripción"
+            value={newMaintenance?.descripcion || ''}
+            onChangeText={(text) => handleInputChange('descripcion', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Costo"
+            value={newMaintenance?.costo ? newMaintenance.costo.toString() : ''}
+            keyboardType="numeric"
+            onChangeText={(text) => handleInputChange('costo', Number(text))}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Estado"
+            value={newMaintenance?.estado_mantencion || 'Completado'}
+            editable= {false}
+            onChangeText={(text) => handleInputChange('estado_mantencion', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Horas de Trabajo"
+            value={newMaintenance?.horas_trabajo ? newMaintenance.horas_trabajo.toString() : ''}
+            keyboardType="numeric"
+            onChangeText={(text) => handleInputChange('horas_trabajo', Number(text))}
+          />
+
+          {/* Botón para guardar nueva mantención */}
+          <TouchableOpacity onPress={saveNewMaintenance} style={styles.addMaintenanceButton}>
+            <Text style={styles.addMaintenanceButtonText}>Guardar Mantención</Text>
+          </TouchableOpacity>
+
+          {/* Botón para cerrar el modal */}
+          <TouchableOpacity onPress={closeAddMaintenanceModal} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+
       <Modal visible={editMaintenanceModalVisible} animationType="slide">
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Editar Mantención</Text>
+          <Text style={styles.modalTitle}>Completar Mantención</Text>
           {/* Solo permitimos editar estos campos */}
           <TextInput
             style={styles.input}
@@ -201,12 +320,17 @@ export default function TabTwoScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleInputChange('costo', Number(text))}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Estado"
-            value={currentMaintenance?.estado_mantencion || ''}
-            onChangeText={(text) => handleInputChange('estado_mantencion', text)}
-          />
+          <View>
+            <Text style={styles.pickerLabel}>Estado de Mantención:</Text>
+            <Picker style={styles.input} selectedValue={currentMaintenance?.estado_mantencion || ''}
+              onValueChange={(itemValue) => handleInputChange('estado_mantencion', itemValue)}
+            >
+              
+              <Picker.Item label="Pendiente" value="Pendiente" />
+              <Picker.Item label="Completada" value="Completada" />
+            </Picker>
+          </View>
+
           <TextInput
             style={styles.input}
             placeholder="Horas de Trabajo"
@@ -231,7 +355,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'white', // Cambiado a blanco
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -277,7 +401,7 @@ const styles = StyleSheet.create({
   maintenanceContainer: {
     marginBottom: 10,
     padding: 10,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#fafbfd',
     borderRadius: 5,
   },
   maintenanceText: {
@@ -314,6 +438,11 @@ const styles = StyleSheet.create({
   },
   editIconContainer: {
     marginLeft: 10,
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
+  pickerLabel: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: 'black',
+  },  
 });
