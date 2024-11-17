@@ -41,11 +41,17 @@ npm run dev
 4. creo el archivo server.js
 ______________________________________________________________________________________________________
 
-1. En la carpeta de backend usar 
+1. En la carpeta de backend usar
+```bash
+npm install express jsonwebtoken
+```
 ```bash
 node server.js
 ```
-2. En la carpeta de rescuetrack usar 
+2. En la carpeta de rescuetrack usar
+```bash
+npm install xlsx
+```
 ```bash
 npm run dev
 ```
