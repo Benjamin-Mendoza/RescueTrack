@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { supabase } from '@/app/supabaseClient'; // Ajusta la ruta según tu estructura
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Picker } from '@react-native-picker/picker';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface Vehicle {
   id_vehiculo: number;
@@ -30,8 +32,10 @@ export default function TabTwoScreen() {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentMaintenance, setCurrentMaintenance] = useState<Maintenance | null>(null);
   const [addMaintenanceModalVisible, setAddMaintenanceModalVisible] = useState(false);
   const [newMaintenance, setNewMaintenance] = useState<Maintenance | null>(null);
+  const [editMaintenanceModalVisible, setEditMaintenanceModalVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
 
   useEffect(() => {
@@ -123,6 +127,8 @@ export default function TabTwoScreen() {
     }
   };
 
+  
+
   const handleInputChange = (key: keyof Maintenance, value: any) => {
     if (newMaintenance) {
       setNewMaintenance((prev) => ({
@@ -131,6 +137,41 @@ export default function TabTwoScreen() {
       }));
     }
   };
+
+  const handleEditMaintenance = (maintenance: Maintenance) => {
+    setCurrentMaintenance(maintenance);
+    setEditMaintenanceModalVisible(true);
+  };
+
+  const saveEditedMaintenance = async () => {
+    if (!currentMaintenance || !selectedVehicle) return;
+
+    const { error } = await supabase
+      .from('mantencion')
+      .update({
+        tipo_mantencion: currentMaintenance.tipo_mantencion,
+        fecha_mantencion: currentMaintenance.fecha_mantencion,
+        descripcion: currentMaintenance.descripcion,
+        costo: currentMaintenance.costo,
+        estado_mantencion: currentMaintenance.estado_mantencion,
+        horas_trabajo: currentMaintenance.horas_trabajo,
+      })
+      .eq('id_mantencion', currentMaintenance.id_mantencion);
+
+    if (error) {
+      console.error('Error editing maintenance:', error);
+    } else {
+      fetchMaintenances(selectedVehicle.id_vehiculo); // Refresca la lista de mantenciones
+      setEditMaintenanceModalVisible(false);
+    }
+  };
+
+  const closeEditMaintenanceModal = () => {
+    setEditMaintenanceModalVisible(false);
+    setCurrentMaintenance(null);
+  };
+
+  
 
   return (
     <View style={styles.container}>
@@ -154,7 +195,6 @@ export default function TabTwoScreen() {
               <Text style={styles.vehicleText}>Marca: {item.marca}</Text>
               <Text style={styles.vehicleText}>Tipo: {item.tipo_vehiculo}</Text>
               <Text style={styles.vehicleText}>Estado: {item.estado_vehiculo}</Text>
-              <Text style={styles.vehicleText}>{item.compania} </Text>
             </View>
             <View>
               <Ionicons name="caret-forward-circle-outline" size={32} color="#868486" />
@@ -176,6 +216,13 @@ export default function TabTwoScreen() {
                 <Text style={styles.maintenanceText}>Costo: ${item.costo}</Text>
                 <Text style={styles.maintenanceText}>Estado: {item.estado_mantencion}</Text>
                 <Text style={styles.maintenanceText}>Horas de Trabajo: {item.horas_trabajo}</Text>
+
+                {/* Ícono de editar mantencion pendiente*/}
+                {item.estado_mantencion === 'Pendiente' && (
+                  <TouchableOpacity onPress={() => handleEditMaintenance(item)} style={styles.editIconContainer}>
+                    <AntDesign name="edit" size={24} color="blue" />
+                  </TouchableOpacity>
+                )}
               </View>
             )}
           />
@@ -228,14 +275,70 @@ export default function TabTwoScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleInputChange('horas_trabajo', Number(text))}
           />
+          {/* Botón para guardar nueva mantención */}
           <TouchableOpacity onPress={saveNewMaintenance} style={styles.addMaintenanceButton}>
             <Text style={styles.addMaintenanceButtonText}>Guardar Mantención</Text>
           </TouchableOpacity>
+
+          {/* Botón para cerrar el modal */}
           <TouchableOpacity onPress={closeAddMaintenanceModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Cancelar</Text>
           </TouchableOpacity>
         </View>
       </Modal>
+
+      <Modal visible={editMaintenanceModalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Completar Mantención</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Descripción"
+            value={currentMaintenance?.descripcion}
+            onChangeText={(text) => setCurrentMaintenance({ ...currentMaintenance!, descripcion: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Costo"
+            value={currentMaintenance?.costo?.toString()}
+            keyboardType="numeric"
+            onChangeText={(text) =>
+              setCurrentMaintenance({
+                ...currentMaintenance!,
+                costo: parseFloat(text),
+              })
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Horas de Trabajo"
+            value={currentMaintenance?.horas_trabajo?.toString()}
+            keyboardType="numeric"
+            onChangeText={(text) =>
+              setCurrentMaintenance({
+                ...currentMaintenance!,
+                horas_trabajo: parseFloat(text),
+              })
+            }
+          />
+          <Picker
+            selectedValue={currentMaintenance?.estado_mantencion}
+            onValueChange={(itemValue) =>
+              setCurrentMaintenance({ ...currentMaintenance!, estado_mantencion: itemValue })
+            }
+          >
+            <Picker.Item label="Seleccione estado..." value="" />
+            <Picker.Item label="Completada" value="Completada" />
+          </Picker>
+          <TouchableOpacity onPress={saveEditedMaintenance} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={closeEditMaintenanceModal} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      
     </View>
   );
 }
@@ -245,7 +348,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'white', // Cambiado a blanco
+    backgroundColor: 'white', 
   },
   title: {
     fontSize: 24,
@@ -280,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'white', // Cambiado a blanco
+    backgroundColor: 'white', 
   },
   modalTitle: {
     fontSize: 24,
@@ -325,5 +428,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 8,
+  },
+  pickerLabel: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: 'black',
+  },
+  editIconContainer: {
+    marginLeft: 10,
+    alignItems: 'center',
+  },
+  saveButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 20,
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
