@@ -180,7 +180,7 @@ export default function TabTwoScreen() {
       {/* Campo de búsqueda */}
       <TextInput
         style={styles.searchInput}
-        placeholder="Buscar por patente..."
+        placeholder="   Buscar por patente..."
         value={searchTerm}
         onChangeText={handleSearch} // Maneja el cambio de texto
       />
