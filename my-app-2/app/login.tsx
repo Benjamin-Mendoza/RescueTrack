@@ -33,7 +33,7 @@ export default function LoginScreen() {
       } else {
         // Almacena la sesión del usuario en AsyncStorage
         await AsyncStorage.setItem('user', JSON.stringify(data));
-        Alert.alert('Inicio de Sesión Exitoso', `Bienvenido, ${data.nombre}`);
+        Alert.alert('Inicio de Sesión', `Bienvenido, ${data.nombre}`);
         router.replace('/'); // Redirige al usuario autenticado
       }
     } catch (error) {
