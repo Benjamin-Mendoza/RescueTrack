@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
-import { supabase } from '@/app/supabaseClient'; // Ajusta la ruta según tu estructura
+import { supabase } from '@/app/supabaseClient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import AntDesign from '@expo/vector-icons/AntDesign';

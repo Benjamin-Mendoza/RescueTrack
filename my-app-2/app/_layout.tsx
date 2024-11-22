@@ -4,42 +4,44 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ActivityIndicator } from 'react-native';
 
 export const unstable_settings = {
-  initialRouteName: 'login', // Define login como ruta inicial
+  initialRouteName: 'login',
 };
 
 export default function RootLayout() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Carga inicial de sesión
+  const [isReady, setIsReady] = useState(false); // Control del montaje del componente
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Verifica si el usuario está almacenado
+        if (!isReady) return; // No realizar navegación si RootLayout no está listo
+
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          const user = JSON.parse(storedUser); // Asegúrate de que sea un objeto válido
-          
-          // Imprimir en consola para ver el contenido del usuario almacenado
-          console.log('Usuario almacenado:', user);  // Aquí podrás ver la información del usuario
-
+          const user = JSON.parse(storedUser);
           if (user && user.id) {
-            router.replace('/'); // Redirige al home si el usuario está autenticado
+            router.replace('/'); // Redirige al home si hay sesión
             return;
           }
         }
-        router.replace('/login'); // Redirige al login si no hay usuario
+        router.replace('/login'); // Redirige al login si no hay sesión
       } catch (error) {
         console.error('Error verificando la sesión:', error);
         router.replace('/login');
       } finally {
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
 
     checkAuth();
+  }, [isReady]); // Se ejecuta solo después de que el componente esté montado
+
+  useEffect(() => {
+    setIsReady(true); // Marca que el RootLayout está montado
   }, []);
 
-  // Mostrar un indicador de carga mientras se verifica la sesión
+  // Indicador de carga mientras se verifica la sesión
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
