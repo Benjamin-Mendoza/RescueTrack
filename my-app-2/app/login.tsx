@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { supabase } from './supabaseClient';
+
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -19,16 +20,15 @@ export default function LoginScreen() {
     setLoading(true);
 
     try {
-      // Consulta a la tabla usuario en Supabase
       const { data, error } = await supabase
-        .from('usuario') // Nombre de tu tabla
+        .from('usuario')
         .select('*')
         .eq('email', email)
         .eq('contrasenia', password)
         .single();
 
       if (error || !data) {
-        console.error('Error en la consulta:', error); // Verifica el error aquí
+        console.error('Error en la consulta:', error);
         Alert.alert('Error', 'Credenciales incorrectas');
       } else {
         // Almacena la sesión del usuario en AsyncStorage
@@ -46,6 +46,10 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <Image
+          source={require('../assets/images/icon.png')}
+          style={styles.logo}
+        />
       <Text style={styles.title}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
@@ -62,7 +66,20 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
       />
-      <Button title={loading ? 'Cargando...' : 'Ingresar'} onPress={handleLogin} disabled={loading} />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={handleLogin}
+          disabled={loading}
+          >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Ingresar</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 }
@@ -71,22 +88,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#f9f9f9',
+    padding: 30,
+    backgroundColor: '#ffff',
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 50,
     textAlign: 'center',
     color: '#333',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 7,
     padding: 10,
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#f7f7f7',
+  },
+  button: {
+    backgroundColor: '#ee344a',
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    borderRadius: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#ea9999',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    paddingTop: 50
+  },
+  logo: {
+    width: 150,
+    height: 150, 
+    alignSelf: 'center', 
+    marginBottom: 20, 
   },
 });

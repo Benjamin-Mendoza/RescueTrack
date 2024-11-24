@@ -1,77 +1,111 @@
-  import React from 'react';
-  import FontAwesome from '@expo/vector-icons/FontAwesome';
-  import { Link, Tabs } from 'expo-router';
-  import { Pressable } from 'react-native';
-  import AntDesign from '@expo/vector-icons/AntDesign';
-  import Feather from '@expo/vector-icons/Feather';
+import React from 'react';
+import { Pressable } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Tabs, Link } from 'expo-router';
+import { useColorScheme } from '@/components/useColorScheme';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-  import Colors from '@/constants/Colors';
-  import { useColorScheme } from '@/components/useColorScheme';
-  import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+export default function TabLayout() {
+  const colorScheme = useColorScheme();
 
-  // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-  function TabBarIcon(props: {
-    name: React.ComponentProps<typeof FontAwesome>['name'];
-    color: string;
-  }) {
-    return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-  }
-
-  export default function TabLayout() {
-    const colorScheme = useColorScheme();
-
-    return (
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          // Disable the static render of the header on web
-          // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true),
-        }}>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Inicio',
-            tabBarIcon: ({ color }) => <AntDesign name="home" size={24}  color={color} />,
-            headerRight: () => (
-              <Link href="/notification" asChild>
-                <Pressable>
-                  {({ pressed }) => (
-                    <Feather name="bell" size={24} color="black"  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
-                  )}
-                </Pressable>
-              </Link>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="two"
-          options={{
-            title: 'Vehículos',
-            tabBarIcon: ({ color }) => <AntDesign name="car" size={24} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="three"
-          options={{
-            title: 'Costos',
-            tabBarIcon: ({ color }) => <Feather name="dollar-sign" size={24} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="four"
-          options={{
-            title: 'Programar',
-            tabBarIcon: ({ color }) => <AntDesign name="calendar" size={24} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="five"
-          options={{
-            title: 'Perfil',
-            tabBarIcon: ({ color }) => <AntDesign name="user" size={24} color={color} />,
-          }}
-        />
-      </Tabs>
-    );
-  }
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#ee344a',
+        tabBarInactiveTintColor: '#aaa', // Color para los íconos inactivos
+        tabBarStyle: {
+          height: 70, // Aumenta la altura del TabBar
+        },
+        tabBarIconStyle: {
+          fontSize: 24, // Tamaño predeterminado de los íconos
+        },
+        headerShown: useClientOnlyValue(false, true),
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="home"
+              size={focused ? 30 : 24} // Cambia el tamaño si está activo
+              color={color}
+            />
+          ),
+          headerRight: () => (
+            <Link href="/notification" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <MaterialCommunityIcons
+                    name="bell-outline"
+                    size={24}
+                    color="black"
+                    style={{
+                      marginRight: 15,
+                      opacity: pressed ? 0.5 : 1,
+                      transform: [{ scale: 1.2 }] 
+                    }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="two"
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="car"
+              size={focused ? 30 : 24} 
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="three"
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name="currency-usd"
+              size={focused ? 36 : 30} 
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="four"
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="calendar"
+              size={focused ? 30 : 24} 
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="five"
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="user"
+              size={focused ? 30 : 24} 
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tabs>
+  );
+}
