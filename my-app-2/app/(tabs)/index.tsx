@@ -1,13 +1,19 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import EditScreenInfo from '@/components/EditScreenInfo';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Bienvenido a nuestra aplicación!</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <View style={styles.header}>
+        <Image
+          source={require('@/assets/images/casco-de-bombero.png')} 
+          style={styles.logo}
+        />
+        <Text style={styles.title}>¡Bienvenido de vuelta!</Text>
+        <Text style={styles.subtitle}>Tu solución para gestionar mantenciones de vehículos.</Text>
+      </View>
+
+    
     </View>
   );
 }
@@ -15,25 +21,57 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF', 
     padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffff', 
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 15,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333', 
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: 30,
   },
   subtitle: {
     fontSize: 18,
-    marginBottom: 20,
-    color: '#666', 
+    color: '#666',
+    textAlign: 'center',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  buttonsContainer: {
+    width: '100%',
+    marginTop: 20,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonSecondary: {
+    backgroundColor: '#fff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonSecondaryText: {
+    color: '#007bff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

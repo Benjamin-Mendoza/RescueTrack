@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Alert, StyleSheet, Text, TextInput } from 'react-native';
+import { Button, View, Alert, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as Notifications from 'expo-notifications';
 import { supabase } from '@/app/supabaseClient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ScheduleMaintenanceButton = () => {
   const [date, setDate] = useState<Date | null>(null);
@@ -103,23 +104,34 @@ const ScheduleMaintenanceButton = () => {
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Programar Mantención</Text>
+
         <TextInput
           placeholder="Patente del Vehículo"
           value={patente}
           onChangeText={setPatente}
           style={styles.input}
         />
+
         <Text style={styles.label}>Tipo de Mantención:</Text>
         <Picker
           selectedValue={tipoMantencion}
           onValueChange={(value) => setTipoMantencion(value)}
           style={styles.picker}
         >
-          <Picker.Item label="Seleccione un tipo" value="" />
+          <Picker.Item label="Seleccione un tipo..." value="" />
           <Picker.Item label="Correctiva" value="Correctiva" />
           <Picker.Item label="Preventiva" value="Preventiva" />
         </Picker>
-        <Button title="Seleccionar Fecha de Mantención" onPress={() => setShowPicker(true)} />
+
+        <TouchableOpacity
+          style={styles.dateButton}
+          onPress={() => setShowPicker(true)}
+        >
+          <Text style={styles.dateButtonText}>
+            {date ? `Fecha: ${date.toLocaleDateString()}` : 'Seleccionar Fecha'}
+          </Text>
+        </TouchableOpacity>
+
         {showPicker && (
           <DateTimePicker
             value={date || new Date()}
@@ -128,10 +140,12 @@ const ScheduleMaintenanceButton = () => {
             onChange={onChange}
           />
         )}
-        <View style={styles.buttonContainer}>
-          <Button title="Programar Mantención" onPress={scheduleMaintenance} />
-        </View>
+
       </View>
+      <TouchableOpacity style={styles.scheduleButton} onPress={scheduleMaintenance}>
+          <Ionicons name="checkmark-circle-outline" size={20} color="white" style={styles.icon} />
+          <Text style={styles.scheduleButtonText}>Programar Mantención</Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -139,45 +153,82 @@ const ScheduleMaintenanceButton = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#ffff',
   },
   card: {
     width: '100%',
     padding: 20,
+    backgroundColor: '#fff',
     borderRadius: 10,
-    backgroundColor: '#f9f9f9',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
+
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 15,
     textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
     marginBottom: 15,
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 5,
   },
   picker: {
-    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
     marginBottom: 15,
   },
-  buttonContainer: {
-    marginTop: 15,
+  dateButton: {
+    padding: 10,
+    backgroundColor: '#007BFF',
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  dateButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  submitButton: {
+    padding: 15,
+    backgroundColor: '#28a745',
+    borderRadius: 8,
     alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  scheduleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#28a745',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+    marginTop: 15,
+  },
+  scheduleButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  icon: {
+    marginRight: 5,
   },
 });
 

@@ -4,6 +4,7 @@ import { supabase } from '@/app/supabaseClient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 
 interface Vehicle {
   id_vehiculo: number;
@@ -178,30 +179,45 @@ export default function TabTwoScreen() {
       <Text style={styles.title}>Lista de Vehículos</Text>
 
       {/* Campo de búsqueda */}
+      <View style={styles.searchContainer}>
+      <AntDesign name="search1" size={20} color="#aaa" style={styles.icon} />
       <TextInput
         style={styles.searchInput}
         placeholder="   Buscar por patente..."
+        placeholderTextColor="#aaa"
         value={searchTerm}
-        onChangeText={handleSearch} // Maneja el cambio de texto
+        onChangeText={handleSearch}
       />
+    </View>
 
-      <FlatList
-        data={filteredVehicles} // Usa los vehículos filtrados
-        keyExtractor={(item) => item.id_vehiculo.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleVehiclePress(item)} style={styles.vehicleContainer}>
-            <View style={styles.vehicleInfo}>
-              <Text style={styles.vehicleText}>Patente: {item.patente}</Text>
-              <Text style={styles.vehicleText}>Marca: {item.marca}</Text>
-              <Text style={styles.vehicleText}>Tipo: {item.tipo_vehiculo}</Text>
-              <Text style={styles.vehicleText}>Estado: {item.estado_vehiculo}</Text>
-            </View>
-            <View>
-              <Ionicons name="caret-forward-circle-outline" size={32} color="#868486" />
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+    <FlatList
+      data={filteredVehicles}
+      keyExtractor={(item) => item.id_vehiculo.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          onPress={() => handleVehiclePress(item)}
+          style={styles.vehicleContainer}
+        >
+          <View style={styles.vehicleInfo}>
+            <Text style={styles.vehicleText}>
+              <Text style={styles.boldText}>Patente: </Text>{item.patente}
+            </Text>
+            <Text style={styles.vehicleText}>
+              <Text style={styles.boldText}>Marca: </Text>{item.marca}
+            </Text>
+            <Text style={styles.vehicleText}>
+              <Text style={styles.boldText}>Tipo: </Text>{item.tipo_vehiculo}
+            </Text>
+            <Text style={styles.vehicleText}>
+              <Text style={styles.boldText}>Estado: </Text>{item.estado_vehiculo}
+            </Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <Ionicons name="caret-forward-circle-outline" size={32} color="#868486" />
+          </View>
+        </TouchableOpacity>
+      )}
+    />
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Mantenciones de {selectedVehicle?.patente}</Text>
@@ -220,7 +236,7 @@ export default function TabTwoScreen() {
                 {/* Ícono de editar mantencion pendiente*/}
                 {item.estado_mantencion === 'Pendiente' && (
                   <TouchableOpacity onPress={() => handleEditMaintenance(item)} style={styles.editIconContainer}>
-                    <AntDesign name="edit" size={24} color="blue" />
+                    <Feather name="edit-2" size={24} color="black" />
                   </TouchableOpacity>
                 )}
               </View>
@@ -356,28 +372,57 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f2f2f2',
+    borderRadius: 25, 
+    paddingHorizontal: 15, 
+    marginVertical: 10, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 5, 
+    elevation: 3, 
+  },
   searchInput: {
+    flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingLeft: 8,
-    borderRadius: 20,
+    fontSize: 16,
+    color: '#333', 
+    paddingVertical: 0, 
+  },
+  icon: {
+    marginRight: 10, 
   },
   vehicleContainer: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 8,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 15,
+    marginVertical: 10,
+    marginHorizontal: 1,
+    borderRadius: 12,
+    elevation: 3, // Sombra para Android
+    shadowColor: '#000', // Sombra para iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   vehicleInfo: {
     flex: 1,
   },
   vehicleText: {
     fontSize: 16,
+    color: '#333',
+    marginBottom: 5, 
+  },
+  boldText: {
+    fontWeight: 'bold', 
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContainer: {
     flex: 1,

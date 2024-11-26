@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View } from 'react-native';
-import { useState, useEffect } from 'react';
 import { supabase } from '@/app/supabaseClient';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -47,25 +47,6 @@ const marcarComoLeida = async (idNotificacion: number) => {
   }
 };
 
-// Función para separar las notificaciones
-const separarNotificaciones = (notificaciones: Notificacion[]) => {
-  const hoy = new Date();
-  const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
-
-  const actuales = notificaciones.filter((notificacion) => {
-    const fecha = new Date(notificacion.fecha_notificacion);
-    return notificacion.estado_notificacion === 'Pendiente' && fecha >= haceUnaSemana;
-  });
-
-  const semanaPasada = notificaciones.filter((notificacion) => {
-    const fecha = new Date(notificacion.fecha_notificacion);
-    return notificacion.estado_notificacion === 'Vista' && fecha < haceUnaSemana;
-  });
-
-  return { actuales, semanaPasada };
-};
-
 export default function ModalScreen() {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
   const [actuales, setActuales] = useState<Notificacion[]>([]);
@@ -76,13 +57,35 @@ export default function ModalScreen() {
       const data = await obtenerNotificaciones();
       setNotificaciones(data);
 
-      const { actuales, semanaPasada } = separarNotificaciones(data);
+      // Separar las notificaciones en dos categorías
+      const actuales = data.filter((notificacion) => notificacion.estado_notificacion === 'Pendiente');
+      const semanaPasada = data.filter((notificacion) => notificacion.estado_notificacion === 'Vista');
       setActuales(actuales);
       setSemanaPasada(semanaPasada);
     };
 
     fetchNotificaciones();
-  }, []);
+  }, []); 
+
+  // Función que actualiza la lista después de marcar una notificación como leída
+  const handleMarkAsRead = async (idNotificacion: number) => {
+    await marcarComoLeida(idNotificacion); // Marca la notificación como leída en la base de datos
+
+    // Actualiza el estado local después de marcarla
+    setNotificaciones((prevNotificaciones) =>
+      prevNotificaciones.map((notificacion) =>
+        notificacion.id_notificacion === idNotificacion
+          ? { ...notificacion, estado_notificacion: 'Vista' }
+          : notificacion
+      )
+    );
+
+    // Filtra las notificaciones actuales y semana pasada nuevamente
+    const actuales = notificaciones.filter((notificacion) => notificacion.estado_notificacion === 'Pendiente');
+    const semanaPasada = notificaciones.filter((notificacion) => notificacion.estado_notificacion === 'Vista');
+    setActuales(actuales);
+    setSemanaPasada(semanaPasada);
+  };
 
   return (
     <View style={styles.container}>
@@ -101,7 +104,7 @@ export default function ModalScreen() {
                   name="check" 
                   size={30} 
                   color="#6EC207" 
-                  onPress={() => marcarComoLeida(notificacion.id_notificacion)} 
+                  onPress={() => handleMarkAsRead(notificacion.id_notificacion)} 
                 />
               </View>
             )}
@@ -111,8 +114,8 @@ export default function ModalScreen() {
         <Text>No hay notificaciones</Text>
       )}
 
-      {/* Sección de Notificaciones Semana Pasada */}
-      <Text style={styles.sectionTitle}>Notificaciones de la Semana Pasada</Text>
+      {/* Sección de Notificaciones Anteriores */}
+      <Text style={styles.sectionTitle}>Notificaciones anteriores</Text>
       {semanaPasada.length > 0 ? (
         semanaPasada.map((notificacion) => (
           <View key={notificacion.id_notificacion} style={styles.notification}>
@@ -164,11 +167,6 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginTop: 10,
-    alignItems: 'center', // Alinea el ícono a la derecha
-  },
-  patente: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#007bff',
+    alignItems: 'center',
   },
 });
