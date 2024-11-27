@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
-import './usuario.css';
+
 
 interface Usuario {
   id_usuario: number;
@@ -36,7 +36,7 @@ async function updateUsuario(id_usuario: number, updatedData: Partial<Usuario>) 
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Agregar token aquí
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(updatedData),
     });
@@ -82,7 +82,7 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
     setEmail(usuario.email);
     setContrasenia(usuario.contrasenia);
     setRol(usuario.rol);
-    setid_Compania(usuario.id_compania || 1); // Valor predeterminado en caso de `id_compania` undefined
+    setid_Compania(usuario.id_compania || 1); 
   }, [usuario]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -130,7 +130,7 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
       setUsuario(updatedUsuario);
 
       setTimeout(() => {
-        router.push('/usuarioslista'); // Redirigir después de la actualización
+        router.push('/usuarioslista'); 
       }, 500);
     } catch (error) {
       console.error(error);
@@ -139,7 +139,8 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
   };
 
   return (
-    <div className="c2">
+    <div className="c1">
+      <div className="c2">
       <h2 className="titulo">Editar Usuario</h2>
       <form onSubmit={handleSubmit} className="form">
         <div className="input-group">
@@ -230,6 +231,7 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
         </div>
         <button type="submit" className="button">Guardar cambios</button>
       </form>
+      </div>
     </div>
   );
 }

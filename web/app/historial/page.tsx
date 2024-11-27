@@ -14,6 +14,7 @@ interface Historial {
     tipo_mantencion: string;
     fecha_mantencion: string;
     descripcion: string;
+    costo: number;
     estado_mantencion: string;
     vehiculo: {
       patente: string;
@@ -80,17 +81,18 @@ export default function HistorialMantenciones() {
   }, [router]);
 
   const exportToExcel = () => {
-    const trimester = prompt('Ingrese el trimiestre que desea exportar (1, 2 o 3)');
-    if (!trimester || !['1', '2', '3'].includes(trimester)) {
-      alert('Trimestre no válido. Por favor, ingrese 1, 2 o 3.');
+    const trimester = prompt('Ingrese el trimestre que desea exportar (T1, T2, T3 o T4)');
+    if (!trimester || !['T1', 'T2', 'T3', 'T4'].includes(trimester)) {
+      alert('Trimestre no válido. Por favor, ingrese T1, T2, T3 o T4.');
       return;
     }
 
     const filteredHistorial = historial.filter((item) => {
       const month = new Date(item.mantencion.fecha_mantencion).getMonth() + 1;
-      if (trimester === '1') return month >= 1 && month <= 4;
-      if (trimester === '2') return month >= 5 && month <= 8;
-      if (trimester === '3') return month >= 9 && month <= 12;
+      if (trimester === 'T1') return month >= 1 && month <= 3;
+      if (trimester === 'T2') return month >= 4 && month <= 6;
+      if (trimester === 'T3') return month >= 7 && month <= 9;
+      if (trimester === 'T4') return month >= 10 && month <= 12;
     });
 
     if (filteredHistorial.length === 0) {
@@ -103,6 +105,7 @@ export default function HistorialMantenciones() {
       'Tipo de Mantención': item.mantencion.tipo_mantencion,
       'Fecha Mantención': item.mantencion.fecha_mantencion,
       'Descripción': item.mantencion.descripcion,
+      'Costo': item.mantencion.costo,
       'Estado': item.mantencion.estado_mantencion,
       'Insumo': item.nombre,
       'Cantidad': item.cantidad,
@@ -144,6 +147,10 @@ export default function HistorialMantenciones() {
                 <tr>
                   <th>Descripción</th>
                   <td>{item.mantencion?.descripcion || 'No disponible'}</td>
+                </tr>
+                <tr>
+                  <th>Costo</th>
+                  <td>${item.mantencion?.costo || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Estado</th>

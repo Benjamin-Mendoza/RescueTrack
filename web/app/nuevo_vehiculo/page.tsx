@@ -138,7 +138,7 @@ const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
-      <h2 className="form-header">Agregar Vehículo</h2>
+      <h2 className="titulo">Agregar Vehículo</h2>
 
       <div className="input-group-row">
         <div className="input-group">

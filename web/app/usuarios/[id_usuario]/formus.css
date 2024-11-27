@@ -8,7 +8,7 @@
   }
   
   .c2 {
-    background-color: #fff;
+    background-color: #fff; 
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 30px;
@@ -40,7 +40,7 @@
     flex: 1; 
     min-width: calc(50% - 10px); 
   }
-  
+
   input[type="text"],
   input[type="email"],
   input[type="password"],
@@ -57,13 +57,12 @@
   input[type="email"]:focus,
   input[type="password"]:focus,
   select:focus {
-    border-color: #154780; 
+    border-color: #154780;
     outline: none;
   }
-  
-  /* Botón */
+
   .button {
-    background-color: #154780; 
+    background-color: #154780;
     color: white;
     font-weight: bold;
     padding: 12px 20px;

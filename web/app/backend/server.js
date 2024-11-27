@@ -53,6 +53,7 @@ app.get('/vehiculos',authenticateToken , async (req, res) => {
 });
 
 // Gestion de vehiculos por id_vehiculo
+
 app.get('/vehiculos/:id_vehiculo',async (req, res) => {
   const { id_vehiculo } = req.params;
 
@@ -121,6 +122,7 @@ app.get('/historial', authenticateToken, async (req, res) => {
           tipo_mantencion,
           fecha_mantencion,
           descripcion,
+          costo,
           estado_mantencion,
           vehiculo (
             patente,
@@ -141,10 +143,7 @@ app.get('/historial', authenticateToken, async (req, res) => {
       console.error('Error al obtener el historial con mantención:', error);
       return res.status(500).json({ error: error.message });
     }
-
-    // Filtrar datos para solo incluir los registros de la compañía del usuario
     const filteredData = data.filter(item => item.mantencion?.vehiculo?.id_compania === id_compania);
-
     res.status(200).json(filteredData);
   } catch (err) {
     console.error('Error en el backend al obtener el historial:', err);
@@ -152,17 +151,14 @@ app.get('/historial', authenticateToken, async (req, res) => {
   }
 });
 
-
-
-
-
 // Editar vehiculo
+
 app.put('/vehiculos/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
   const { estado_vehiculo, kilometraje } = req.body;
-
   const vehiculoId = parseInt(id_vehiculo);
   console.log('Datos recibidos:', { estado_vehiculo, kilometraje });
+
   try {
     const { data, error } = await supabase.from('vehiculo').update({ estado_vehiculo, kilometraje }).eq('id_vehiculo', vehiculoId);
     if (error) {
@@ -177,20 +173,55 @@ app.put('/vehiculos/:id_vehiculo', async (req, res) => {
 });
 
 //Eliminar vehiculos
+
 app.delete('/deletevehiculo/:id_vehiculo', async (req, res) => {
   const { id_vehiculo } = req.params;
-  console.log('Eliminando vehículo con ID:', id_vehiculo);  // Verifica que ID es correcto
+  console.log('Intentando eliminar el vehículo con ID:', id_vehiculo);
+
   try {
-    const { data, error } = await supabase.from('vehiculo').delete().eq('id_vehiculo', id_vehiculo);
-    if (error) {
-      return res.status(500).json({ error: error.message });
+    // Verificar si el vehículo existe
+    const { data: vehiculoExistente, error: errorVerificacion } = await supabase
+      .from('vehiculo')
+      .select('*')
+      .eq('id_vehiculo', id_vehiculo)
+      .single();
+    if (errorVerificacion) {
+      return res.status(500).json({ error: 'Error al verificar el vehículo.' });
     }
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'Vehículo no encontrado' });
+    if (!vehiculoExistente) {
+      return res.status(404).json({ message: 'Vehículo no encontrado.' });
     }
-    res.status(200).json({ message: 'Vehículo eliminado correctamente' });
+    // Verificar si hay mantenimientos pendientes
+    const { data: mantenciones, error: mantencionesError } = await supabase
+      .from('mantencion')
+      .select('estado_mantencion')
+      .eq('id_vehiculo', id_vehiculo);
+    if (mantencionesError) {
+      return res.status(500).json({ error: 'Error al consultar mantenimientos.' });
+    }
+    // Revisar si alguna mantención tiene el estado 'Pendiente'
+    if (mantenciones && mantenciones.some((m) => m.estado_mantencion === 'Pendiente')) {
+      return res.status(400).json({
+        message: 'El vehículo tiene mantenciones pendientes y no puede ser eliminado.',
+      });
+    }
+    const { data: vehiculoEliminado, error: errorEliminacion } = await supabase
+      .from('vehiculo')
+      .delete()
+      .eq('id_vehiculo', id_vehiculo)
+      .select();
+
+    if (errorEliminacion) {
+      return res.status(500).json({ error: 'Error al eliminar el vehículo.' });
+    }
+
+    res.status(200).json({
+      message: 'Vehículo eliminado correctamente.',
+      eliminado: vehiculoEliminado[0],
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar el vehículo' });
+    console.error(err);
+    res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
 
@@ -198,8 +229,7 @@ app.delete('/deletevehiculo/:id_vehiculo', async (req, res) => {
 
 app.post('/nuevo_vehiculo', async (req, res) => {
   const { patente, marca, modelo, anio, tipo_vehiculo, estado_vehiculo, kilometraje, id_compania } = req.body;
-  
-  console.log('Datos recibidos:', req.body);  // Verifica qué datos están llegando
+  console.log('Datos recibidos:', req.body); 
 
   try {
     const { data, error } = await supabase.from('usuario').insert([{ patente, marca, modelo, anio, tipo_vehiculo, estado_vehiculo, kilometraje, id_compania }]);
@@ -254,17 +284,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-
-
-
 //Agregar usuarios
-
 
 app.post('/registro', async (req, res) => {
   const { nombre, apellido, email, contrasenia, rol, id_compania } = req.body;
   
-  console.log('Datos recibidos:', req.body);  // Verifica qué datos están llegando
+  console.log('Datos recibidos:', req.body); 
 
   try {
     const { data, error } = await supabase.from('usuario').insert([{ nombre, apellido, email, contrasenia, rol, id_compania }]);
@@ -279,32 +304,24 @@ app.post('/registro', async (req, res) => {
   }
 });
 
-
 //Obtener datos de los usuarios
 
 app.get('/usuarios', authenticateToken, async (req, res) => {
   try {
-    // Extrae id_compania del usuario autenticado
     const { id_compania } = req.user;
-
-    // Filtra usuarios por el id_compania del usuario autenticado
     const { data, error } = await supabase
       .from('usuario')
       .select('*')
       .eq('id_compania', id_compania);
-
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-
     res.json(data);
   } catch (err) {
     console.error('Error al obtener los usuarios:', err);
     res.status(500).send('Error al obtener los usuarios');
   }
 });
-
-
 
 //Obtener datos de los usuarios por id
 app.get('/usuarios/:id_usuario' ,async (req, res) => {
@@ -364,6 +381,54 @@ app.delete('/deleteuser/:id_usuario', async (req, res) => {
   }
 });
 
+//DASHBOARD
+
+//Costo por trimestre
+
+app.get('/costostrimestre', authenticateToken, async (req, res) => {
+  try {
+    const { id_compania } = req.user;
+    const { data, error } = await supabase.rpc('get_costos_trimestre', { id_compania });
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error('Error al obtener los costos por trimestre:', err);
+    res.status(500).send('Error al obtener los costos por trimestre');
+  }
+});
+
+//Estado del vehiculo
+
+app.get('/vehiculosestado', authenticateToken, async (req, res) => {
+  try {
+    const { id_compania } = req.user;
+    const { data, error } = await supabase.rpc('get_vehiculos_estado', { id_compania });
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error('Error al obtener los estados de los vehículos:', err);
+    res.status(500).send('Error al obtener los estados de los vehículos');
+  }
+});
+
+//Estado de las mantenciones
+app.get('/estadosmantencion', authenticateToken, async (req, res) => {
+  try {
+    const { id_compania } = req.user;
+    const { data, error } = await supabase.rpc('get_estados_mantencion', { id_compania });
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error('Error al obtener los estados de mantención:', err);
+    res.status(500).send('Error al obtener los estados de mantención');
+  }
+});
 
 // Inicia el servidor
 app.listen(PORT, () => {

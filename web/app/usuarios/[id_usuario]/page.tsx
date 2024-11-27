@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import UsuarioForm from './usuarioForm';
-import './usuario.css';
+import './formus.css';
 import { useRouter } from 'next/navigation';
 
 interface Usuario {
@@ -69,7 +69,7 @@ export default function UsuarioDetalles({ params }: { params: { id_usuario: stri
 
   return (
     <div>
-      <h1>Detalles del Usuario</h1>
+
       {usuario ? (
         <UsuarioForm usuario={usuario} setUsuario={setUsuario} />
       ) : (

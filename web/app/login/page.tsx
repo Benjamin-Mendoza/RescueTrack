@@ -33,9 +33,9 @@ export default function Login() {
       if (response.ok) {
         if (data.token) {
           if (typeof window !== 'undefined') {
-            localStorage.setItem('token', data.token);  // Guarda el token en el cliente
+            localStorage.setItem('token', data.token); 
           }
-          router.replace('/home'); // Redirige a la página de inicio
+          router.replace('/home');
         } else {
           setErrorMessage('Token no encontrado.');
         }

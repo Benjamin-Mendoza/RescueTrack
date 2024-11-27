@@ -105,7 +105,7 @@ export default function UsuariosPage() {
   return (
     <div className="container">
       <div className="header-button">
-        <button className="button" onClick={handleAñadirUsuario}>
+        <button className="button-agregar" onClick={handleAñadirUsuario}>
           Añadir usuario
         </button>
       </div>
@@ -130,18 +130,20 @@ export default function UsuariosPage() {
               <td>{usuario.rol}</td>
               <td>{usuario.id_compania}</td>
               <td className="table-actions">
-                <button
-                  onClick={() => handleVerDetalles(usuario.id_usuario)}
-                  className="button"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleEliminar(usuario.id_usuario)}
-                  className="button-eliminar"
-                >
-                  Eliminar
-                </button>
+                <div className="table-actions">
+                  <button
+                    onClick={() => handleVerDetalles(usuario.id_usuario)}
+                    className="button"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleEliminar(usuario.id_usuario)}
+                    className="button-eliminar"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

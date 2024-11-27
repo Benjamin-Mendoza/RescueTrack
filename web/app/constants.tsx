@@ -10,6 +10,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: <Icon icon="lucide:home" width="24" height="24" />,
   },
   {
+    title: 'Dashboard',
+    path: '/dashboard',
+
+    icon: <Icon icon="lucide:user" width="24" height="24" />,
+  },
+  {
     title: 'Usuarios',
     path: '/usuarioslista',
 

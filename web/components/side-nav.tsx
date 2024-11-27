@@ -27,6 +27,18 @@ export function SideNav() {
             Inicio
           </Link>
 
+          <div className="w-full border-t border-white"></div>
+
+          
+          <Link
+            href="/dashboard"
+            className={`p-4 text-xl font-bold ${
+              pathname === '/dashboard' ? 'bg-zinc-100' : ''
+            } w-full text-center text-white`}
+          >
+            Dashboard
+          </Link>         
+
           
           <div className="w-full border-t border-white"></div>
 
@@ -59,7 +71,7 @@ export function SideNav() {
           <Link
             href="/historial"
             className={`p-4 text-xl font-bold ${
-              pathname === '/historial' ? 'bg-zinc-100' : ''
+              pathname === '/historial mantenciones' ? 'bg-zinc-100' : ''
             } w-full text-center text-white`}
           >
             Historial Mantenciones

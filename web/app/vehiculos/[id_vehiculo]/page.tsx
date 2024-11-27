@@ -4,6 +4,7 @@ import VehiculoForm from './vehiculoForm';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 interface Vehiculo {
   id_vehiculo: number;
   patente: string;

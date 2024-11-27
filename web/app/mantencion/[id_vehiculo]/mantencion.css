@@ -1,95 +1,79 @@
-/* Estilos generales para el contenedor */
-.mantenimientos-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-}
-
-.mantenimientos-container h1 {
-    text-align: center;
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f8;
     color: #333;
-}
-
-/* Mensajes de carga y error */
-.loading-message,
-.error-message {
-    text-align: center;
-    color: #555;
-    font-size: 1.1em;
-}
-
-/* Estilos para cada tabla de mantenimiento */
+    line-height: 1.6;
+  }
+  
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
 .mantencion-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Encabezado de la tabla */
-.mantencion-table thead th {
-    background-color: #154780;
-    color: white;
-    padding: 10px;
-    text-align: left;
-    font-weight: bold;
-    font-size: 1em;
-    border: 1px solid #ddd;
-}
-
-/* Filas de la tabla */
-.mantencion-table tbody tr {
-    background-color: #f9f9f9;
-}
-
-.mantencion-table tbody tr:nth-child(even) {
-    background-color: #e9e9e9;
-}
-
-/* Celdas de la tabla */
+    margin-top: 20px;
+  }
+  
+.mantencion-table th,
 .mantencion-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+.mantencion-table th {
+    background-color: #154780;
+    font-weight: bold;
+    color: #f9f9f9;
+  }
+  
+.mantencion-table td {
+    color: #555;
+  }
+  
+.mantencion-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+.mantencion-table tr:hover {
+    background-color: #e9e9e9;
+  }
 
-/* Estilos de la tabla vacía */
-.empty-message {
+.mantencion-table td:nth-child(2),
+.mantencion-table td:nth-child(4),
+.mantencion-table td:nth-child(6) {
+    font-weight: bold;
+  }
+  
+  p {
+    font-size: 16px;
+    color: #333;
     text-align: center;
-    color: #777;
-    font-size: 1.1em;
-}
-
-/* Ajustes para pantallas pequeñas */
-@media (max-width: 600px) {
-    .mantencion-table thead {
-        display: none;
-    }
-
-    .mantencion-table,
-    .mantencion-table tbody,
-    .mantencion-table tr,
+    margin-top: 20px;
+  }
+  
+  p.loading {
+    font-style: italic;
+    color: #666;
+  }
+  
+  p.error {
+    color: red;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .mantencion-table th,
     .mantencion-table td {
-        display: block;
-        width: 100%;
+      font-size: 14px;
+      padding: 8px;
     }
-
-    .mantencion-table tr {
-        margin-bottom: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .mantencion-table td {
-        padding: 10px;
-        text-align: right;
-        position: relative;
-    }
-
-    .mantencion-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-}
+  }
+  

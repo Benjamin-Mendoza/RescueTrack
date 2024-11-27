@@ -1,146 +1,134 @@
 .container {
-  padding: 20px;
-}
-
-.filtros-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.filtro-item {
-  margin-right: 20px;
-}
-
-.filtro-label {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.filtro-select {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
 
 .button-agregar {
-  background-color: #154780;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
+    background-color: #154780;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+.button-agregar:hover {
+    background-color: #154780; 
+  }
+  
 
 .table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th, .table td {
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-}
-
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
 .table th {
-  background-color: #f2f2f2;
-  border-bottom: 2px solid #ddd;
-}
-
-.table tbody tr {
-  border-bottom: 1px solid #ddd;
-}
-
-.table-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.button{
-  background-color: #154780;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.button-eliminar {
-  background-color: #f44336;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.button-mantencion{
-  background-color: #154780;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .filtros-container {
-    flex-direction: column;
-  }
-
-  .filtro-item {
-    margin-bottom: 10px;
-    margin-right: 0;
-  }
-
-  .table {
-    font-size: 12px;
-  }
-
-  .button-agregar {
-    width: 100%;
+    background-color: #154780; 
+    color: white;
+    text-align: left;
     padding: 12px;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+  
+.table td {
+    padding: 12px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+.table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+.table tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+.table td .actions {
+    display: flex;
+    gap: 10px;
   }
 
-  .table th, .table td {
-    padding: 8px;
+.button {
+    background-color: #154780;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
-
-  .table-actions {
-    flex-direction: column;
-    gap: 5px;
+  
+.button:hover {
+    background-color: #154780; 
   }
-
-  .button-editar, .button-eliminar {
-    width: 100%;
+  
+.button-eliminar {
+    background-color: #dc3545; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
-}
-
-@media (max-width: 480px) {
-  .table th, .table td {
-    font-size: 10px;
-    padding: 5px;
+  
+.button-eliminar:hover {
+    background-color: #c82333; 
   }
+  
 
-  .filtro-label {
-    font-size: 12px;
+.button-mantencion {
+    background-color: #154780; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
-
-  .filtro-select {
-    padding: 6px;
-    font-size: 12px;
+  
+.button-mantencion:hover {
+    background-color: #154780;
   }
-
-  .button-agregar, .button-editar, .button-eliminar {
-    padding: 8px;
-    font-size: 12px;
+  
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
   }
-}
-
-
-
-
+  
+.filtros label {
+    font-size: 14px;
+    color: #333;
+  }
+  
+.filtros select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s ease;
+  }
+  
+.filtros select:focus {
+    border-color: #154780; 
+    outline: none;
+  }
   

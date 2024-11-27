@@ -87,6 +87,30 @@ export default function VehiculosPage() {
     setFiltroEstado(e.target.value);
   };
 
+  async function deleteVehiculo(id_vehiculo: number) {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`http://localhost:8081/deletevehiculo/${id_vehiculo}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (res.status === 400) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'No se puede eliminar el vehículo');
+      }
+  
+      if (!res.ok) {
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  }
+  
+
   const handleEliminarVehiculo = async (id_vehiculo: number) => {
     if (confirm('¿Estás seguro de que deseas eliminar este vehículo?')) {
       try {
@@ -95,15 +119,14 @@ export default function VehiculosPage() {
         setVehiculos((prev) => prev.filter((vehiculo) => vehiculo.id_vehiculo !== id_vehiculo));
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.error('Error al eliminar el vehículo:', error.message);
           alert('Error al eliminar el vehículo: ' + error.message);
         } else {
-          console.error('Error desconocido:', error);
           alert('Error desconocido al eliminar el vehículo.');
         }
       }
     }
   };
+  
 
   const vehiculosFiltrados = vehiculos
     .filter((vehiculo) => userCompanyId === null || vehiculo.id_compania === userCompanyId)
@@ -153,17 +176,18 @@ export default function VehiculosPage() {
               <td>{vehiculo.estado_vehiculo}</td>
               <td>{vehiculo.kilometraje}</td>
               <td>
-              <button onClick={() => handleVerDetalles(vehiculo.id_vehiculo)} className="button">
+              <div className="actions">
+                <button onClick={() => handleVerDetalles(vehiculo.id_vehiculo)} className="button">
                   Editar
                 </button>
-
+                <button onClick={() => handleVerMantenimientos(vehiculo.id_vehiculo)} className="button-mantencion">
+                  Mantención
+                </button>
                 <button onClick={() => handleEliminarVehiculo(vehiculo.id_vehiculo)} className="button-eliminar">
                   Eliminar
                 </button>
-                <button onClick={() => handleVerMantenimientos(vehiculo.id_vehiculo)} className="button-mantencion">
-                  Mantenciones
-                </button>
-              </td>
+              </div>
+            </td>
             </tr>
           ))}
         </tbody>
@@ -172,20 +196,3 @@ export default function VehiculosPage() {
   );
 }
 
-async function deleteVehiculo(id_vehiculo: number) {
-  try {
-    const token = localStorage.getItem('token');
-    const res = await fetch(`http://localhost:8081/deletevehiculo/${id_vehiculo}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error('Failed to delete vehicle');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
