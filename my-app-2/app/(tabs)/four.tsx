@@ -138,6 +138,7 @@ const ScheduleMaintenanceButton = () => {
             mode="date"
             display="default"
             onChange={onChange}
+            minimumDate={new Date()}
           />
         )}
 

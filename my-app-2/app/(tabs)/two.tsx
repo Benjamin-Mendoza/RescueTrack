@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface Vehicle {
   id_vehiculo: number;
@@ -38,6 +39,9 @@ export default function TabTwoScreen() {
   const [newMaintenance, setNewMaintenance] = useState<Maintenance | null>(null);
   const [editMaintenanceModalVisible, setEditMaintenanceModalVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -52,6 +56,18 @@ export default function TabTwoScreen() {
 
     fetchVehicles();
   }, []);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(false);
+    setDate(currentDate);
+  };
+
+  // Función para manejar el cambio de fecha
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+    handleInputChange('fecha_mantencion', date); // Actualiza el estado del formulario si es necesario
+  };
 
   // Función para filtrar los vehículos
   const handleSearch = (text: string) => {
@@ -71,8 +87,23 @@ export default function TabTwoScreen() {
     if (error) {
       console.error('Error fetching maintenances:', error);
     } else {
+
+      const sortedMaintenances = data?.sort((a, b) => 
+        new Date(b.fecha_mantencion).getTime() - new Date(a.fecha_mantencion).getTime()
+      );
+  
       setMaintenances(data || []);
     }
+  };
+
+  // Función para formatear las fechas a dd/mm/yyyy
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Día con 2 dígitos
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes con 2 dígitos
+    const year = date.getFullYear(); // Año
+
+    return `${day}/${month}/${year}`;
   };
 
   const handleVehiclePress = (vehicle: Vehicle) => {
@@ -227,9 +258,9 @@ export default function TabTwoScreen() {
             renderItem={({ item }) => (
               <View style={styles.maintenanceContainer}>
                 <Text style={styles.maintenanceText}>Tipo: {item.tipo_mantencion}</Text>
-                <Text style={styles.maintenanceText}>Fecha: {new Date(item.fecha_mantencion).toLocaleDateString()}</Text>
+                <Text style={styles.maintenanceText}>Fecha: {formatDate(item.fecha_mantencion)}</Text>
                 <Text style={styles.maintenanceText}>Descripción: {item.descripcion}</Text>
-                <Text style={styles.maintenanceText}>Costo: ${item.costo}</Text>
+                <Text style={styles.maintenanceText}>Costo: ${item.costo.toLocaleString("es-ES")}</Text>
                 <Text style={styles.maintenanceText}>Estado: {item.estado_mantencion}</Text>
                 <Text style={styles.maintenanceText}>Horas de Trabajo: {item.horas_trabajo}</Text>
 
@@ -259,12 +290,24 @@ export default function TabTwoScreen() {
             value={newMaintenance?.tipo_mantencion || ''}
             onChangeText={(text) => handleInputChange('tipo_mantencion', text)}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Fecha de Mantención (YYYY-MM-DD)"
-            value={newMaintenance?.fecha_mantencion || ''}
-            onChangeText={(text) => handleInputChange('fecha_mantencion', text)}
-          />
+          <TouchableOpacity
+            style={styles.dateButton}
+            onPress={() => setShowPicker(true)}
+          >
+            <Text style={styles.dateButtonText}>
+              {date ? `Fecha: ${date.toLocaleDateString()}` : 'Seleccionar Fecha'}
+            </Text>
+          </TouchableOpacity>
+
+          {showPicker && (
+            <DateTimePicker
+              value={date || new Date()}
+              mode="date"
+              display="default"
+              onChange={onChange}
+              minimumDate={new Date()}
+            />
+          )}
           <TextInput
             style={styles.input}
             placeholder="Descripción"
@@ -278,12 +321,16 @@ export default function TabTwoScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleInputChange('costo', Number(text))}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Estado"
-            value={newMaintenance?.estado_mantencion || ''}
-            onChangeText={(text) => handleInputChange('estado_mantencion', text)}
-          />
+          <Picker
+            selectedValue={newMaintenance?.estado_mantencion}
+            onValueChange={(itemValue) =>
+              handleInputChange('estado_mantencion', itemValue)
+            }
+            style={styles.picker}
+          >
+            <Picker.Item label="Completada" value="Completada" style={styles.pickerItem} />
+            <Picker.Item label="Pendiente" value="Pendiente" style={styles.pickerItem} />
+          </Picker>
           <TextInput
             style={styles.input}
             placeholder="Horas de Trabajo"
@@ -346,6 +393,7 @@ export default function TabTwoScreen() {
             <Picker.Item label="Seleccione estado..." value="" />
             <Picker.Item label="Completada" value="Completada" />
           </Picker>
+          
           <TouchableOpacity onPress={saveEditedMaintenance} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Guardar Cambios</Text>
           </TouchableOpacity>
@@ -473,6 +521,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 8,
+    borderRadius: 8
   },
   pickerLabel: {
     fontSize: 16,
@@ -493,5 +542,29 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     textAlign: 'center',
+  },
+  dateButton: {
+    padding: 10,
+    backgroundColor: '#e4e4e4',
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  dateButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  picker: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    marginBottom: 15,
+    height: 45,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  pickerItem: {
+    fontSize: 16,
+    color: '#555',
   },
 });

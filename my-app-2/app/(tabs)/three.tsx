@@ -97,38 +97,56 @@ const MaintenanceCostChart = () => {
   const generatePDF = async () => {
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([600, 400]);
+      let page = pdfDoc.addPage([600, 400]);
       const { height } = page.getSize();
-
+      const margin = 50; // Margen superior
+      const lineHeight = 20; // Altura de la línea de texto
+      const textSize = 9; // Tamaño de la fuente
+      const maxLinesPerPage = 30; // Máximo número de líneas por página
+      let currentLine = 0; // Contador de líneas actuales
+  
       page.drawText('Reporte de Mantenciones', {
-        x: 50,
-        y: height - 50,
+        x: margin,
+        y: height - margin,
         size: 30,
         color: rgb(0, 0, 0),
       });
-
+  
       maintenances.forEach((maintenance, index) => {
+        // Si se excede el número máximo de líneas, agregar una nueva página
+        if (currentLine >= maxLinesPerPage) {
+          page = pdfDoc.addPage([600, 400]); // Agregar nueva página
+          currentLine = 0; // Restablecer contador de líneas
+        }
+  
         page.drawText(
-          `Patente: ${maintenance.patente} | ${maintenance.tipo_mantencion} | Desc: ${maintenance.descripcion} | ${maintenance.fecha_mantencion} | Costo: $${maintenance.costo}`,
-          { x: 50, y: height - 100 - index * 20, size: 9, color: rgb(0, 0, 0) }
+          `Patente: ${maintenance.patente} | ${maintenance.tipo_mantencion} | ${maintenance.descripcion} | ${maintenance.fecha_mantencion} | Costo: $${maintenance.costo}`,
+          {
+            x: margin,
+            y: height - margin - (currentLine + 1) * lineHeight,
+            size: textSize,
+            color: rgb(0, 0, 0),
+          }
         );
+  
+        currentLine++; // Incrementar el contador de líneas
       });
-
+  
       const total = maintenances.reduce((acc, maintenance) => acc + maintenance.costo, 0);
       page.drawText(`Total: $${total}`, {
-        x: 50,
-        y: height - 100 - maintenances.length * 20 - 20,
+        x: margin,
+        y: height - margin - (currentLine + 1) * lineHeight,
         size: 12,
         color: rgb(0, 0, 0),
       });
-
+  
       const pdfBytes = await pdfDoc.save();
       const pdfBase64 = globalThis.btoa(String.fromCharCode(...pdfBytes));
       const filePath = `${FileSystem.documentDirectory}ReporteMantenciones.pdf`;
       await FileSystem.writeAsStringAsync(filePath, pdfBase64, {
         encoding: FileSystem.EncodingType.Base64,
       });
-
+  
       await Sharing.shareAsync(filePath);
       Alert.alert('PDF generado y compartido con éxito!');
     } catch (error: unknown) {
@@ -141,6 +159,7 @@ const MaintenanceCostChart = () => {
       }
     }
   };
+  
 
   const chartData = {
     labels: data.map((item) => `Trimestre ${item.trimestre}`),
@@ -162,7 +181,7 @@ const MaintenanceCostChart = () => {
       <View style={styles.summaryContainer}>
         <Text style={styles.summaryTitle}>Resumen de Mantenimientos</Text>
         <Text>Cantidad de Mantenimientos: {cantidadMantenimientos}</Text>
-        <Text>Total Costo: ${totalCosto.toFixed(0)}</Text>
+        <Text>Total Costo: ${totalCosto.toLocaleString("es-ES")}</Text>
       </View>
 
       <Text style={styles.title2}>Costo de Mantenciones Trimestral - {new Date().getFullYear()}</Text>
