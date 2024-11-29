@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { StyleSheet, FlatList, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { supabase } from '@/app/supabaseClient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 interface Vehicle {
   id_vehiculo: number;
@@ -26,6 +27,14 @@ interface Maintenance {
   costo: number;
   estado_mantencion: string;
   horas_trabajo: number;
+  insumos?: Insumo[];
+}
+
+interface Insumo {
+  insumo: any;
+  id_insumo: number;
+  nombre: string;
+  cantidad: number;
 }
 
 export default function TabTwoScreen() {
@@ -40,8 +49,18 @@ export default function TabTwoScreen() {
   const [editMaintenanceModalVisible, setEditMaintenanceModalVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
+
+  const [date, setDate] = useState(new Date());
+
   const [showPicker, setShowPicker] = useState(false);
+  const [insumoQuantity, setInsumoQuantity] = useState<number>(1); // Cantidad del insumo
+  const [addedInsumos, setAddedInsumos] = useState<any[]>([]); // Insumos agregados temporalmente
+  const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Para un solo insumo seleccionado
+  const [insumos, setInsumos] = useState<Insumo[]>([]); // Para una lista de insumos
+
+  //console.log('insumoQuantity:', insumoQuantity);
+  //console.log('selectedInsumo:', selectedInsumo);
+  //console.log('insumos:', insumos);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -57,17 +76,20 @@ export default function TabTwoScreen() {
     fetchVehicles();
   }, []);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowPicker(false);
-    setDate(currentDate);
-  };
 
-  // Función para manejar el cambio de fecha
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-    handleInputChange('fecha_mantencion', date); // Actualiza el estado del formulario si es necesario
-  };
+  useEffect(() => {
+    const fetchInsumos = async () => {
+      const { data, error } = await supabase.from('insumo').select('*');
+      if (error) {
+        console.error('Error fetching insumos:', error);
+      } else {
+        setInsumos(data || []);
+      }
+    };
+  
+    fetchInsumos();
+  }, []);
+  
 
   // Función para filtrar los vehículos
   const handleSearch = (text: string) => {
@@ -79,22 +101,37 @@ export default function TabTwoScreen() {
   };
 
   const fetchMaintenances = async (vehicleId: number) => {
-    const { data, error } = await supabase
+    const { data: maintenances, error } = await supabase
       .from<Maintenance>('mantencion')
       .select('*')
       .eq('id_vehiculo', vehicleId);
-
+  
     if (error) {
       console.error('Error fetching maintenances:', error);
     } else {
-
-      const sortedMaintenances = data?.sort((a, b) => 
+      const sortedMaintenances = maintenances?.sort((a, b) => 
         new Date(b.fecha_mantencion).getTime() - new Date(a.fecha_mantencion).getTime()
       );
   
-      setMaintenances(data || []);
+      // Para cada mantenimiento, obtenemos los insumos relacionados
+      for (let i = 0; i < sortedMaintenances.length; i++) {
+        const { data: insumos, error: insumoError } = await supabase
+          .from('mantencion_insumo')
+          .select('insumo:id_insumo(nombre), cantidad')
+          .eq('id_mantencion', sortedMaintenances[i].id_mantencion);
+
+        if (insumoError) {
+          console.error('Error fetching insumos:', insumoError);
+        } else {
+          //console.log('Insumos:', insumos); // Verifica aquí la estructura de los insumos
+          sortedMaintenances[i].insumos = insumos; // Asociamos los insumos al mantenimiento
+        }
+      }
+  
+      setMaintenances(sortedMaintenances || []);
     }
   };
+   
 
   // Función para formatear las fechas a dd/mm/yyyy
   const formatDate = (dateString: string) => {
@@ -138,26 +175,93 @@ export default function TabTwoScreen() {
 
   const saveNewMaintenance = async () => {
     if (!newMaintenance || !selectedVehicle) return;
-
-    const { error } = await supabase.from('mantencion').insert([
-      {
-        id_vehiculo: selectedVehicle.id_vehiculo,
-        tipo_mantencion: newMaintenance.tipo_mantencion,
-        fecha_mantencion: newMaintenance.fecha_mantencion,
-        descripcion: newMaintenance.descripcion,
-        costo: newMaintenance.costo,
-        estado_mantencion: newMaintenance.estado_mantencion,
-        horas_trabajo: newMaintenance.horas_trabajo,
-      },
-    ]);
-
+  
+    // Verificar si la fecha es válida y no vacía
+    if (!newMaintenance.fecha_mantencion) {
+      console.error('La fecha de mantención es obligatoria');
+      return;
+    }
+  
+    const { data, error } = await supabase.from('mantencion').insert([{
+      id_vehiculo: selectedVehicle.id_vehiculo,
+      tipo_mantencion: newMaintenance.tipo_mantencion,
+      fecha_mantencion: newMaintenance.fecha_mantencion,
+      descripcion: newMaintenance.descripcion,
+      costo: newMaintenance.costo,
+      estado_mantencion: newMaintenance.estado_mantencion,
+      horas_trabajo: newMaintenance.horas_trabajo,
+    }]).select();
+  
     if (error) {
       console.error('Error adding maintenance:', error);
-    } else {
+    } else if (data && data.length > 0) {
+      const newMantencionId = data[0].id_mantencion;
+  
+      // Guardar insumos relacionados
+      for (const insumo of addedInsumos) {
+        // Verificar si el insumo ya está agregado en la tabla mantencion_insumo
+        const { data: existingInsumos, error: fetchError } = await supabase
+          .from('mantencion_insumo')
+          .select('id_insumo')
+          .eq('id_mantencion', newMantencionId)
+          .eq('id_insumo', insumo.id_insumo);
+  
+        if (fetchError) {
+          console.error('Error fetching existing insumos:', fetchError);
+          continue;
+        }
+  
+        if (existingInsumos.length > 0) {
+          // Si el insumo ya está agregado, actualizar la cantidad
+          const { error: updateError } = await supabase
+            .from('mantencion_insumo')
+            .update({ cantidad: insumo.cantidad })
+            .eq('id_mantencion', newMantencionId)
+            .eq('id_insumo', insumo.id_insumo);
+  
+          if (updateError) {
+            console.error('Error updating mantencion_insumo:', updateError);
+          }
+        } else {
+          // Si el insumo no está agregado, insertar uno nuevo
+          const insumoData = await supabase
+            .from('insumo')
+            .select('cantidad')
+            .eq('id_insumo', insumo.id_insumo)
+            .single();
+  
+          if (insumoData?.data?.cantidad >= insumo.cantidad) {
+            // Actualizar la tabla `insumo` restando la cantidad utilizada
+            const { error: updateError } = await supabase
+              .from('insumo')
+              .update({
+                cantidad: insumoData.data.cantidad - insumo.cantidad,
+              })
+              .eq('id_insumo', insumo.id_insumo);
+  
+            if (updateError) {
+              console.error('Error updating insumo stock:', updateError);
+            } else {
+              // Insertar el insumo en la tabla de `mantencion_insumo`
+              await supabase.from('mantencion_insumo').insert([{
+                id_mantencion: newMantencionId,
+                id_insumo: insumo.id_insumo,
+                cantidad: insumo.cantidad,
+              }]);
+            }
+          } else {
+            console.error(`No hay suficiente stock de ${insumo.nombre}`);
+          }
+        }
+      }
+  
       fetchMaintenances(selectedVehicle.id_vehiculo); // Refresca la lista de mantenciones
       closeAddMaintenanceModal();
     }
   };
+
+  
+
 
   
 
@@ -206,6 +310,7 @@ export default function TabTwoScreen() {
   
 
   return (
+   
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Vehículos</Text>
 
@@ -257,13 +362,36 @@ export default function TabTwoScreen() {
             keyExtractor={(item) => item.id_mantencion.toString()}
             renderItem={({ item }) => (
               <View style={styles.maintenanceContainer}>
-                <Text style={styles.maintenanceText}>Tipo: {item.tipo_mantencion}</Text>
-                <Text style={styles.maintenanceText}>Fecha: {formatDate(item.fecha_mantencion)}</Text>
-                <Text style={styles.maintenanceText}>Descripción: {item.descripcion}</Text>
-                <Text style={styles.maintenanceText}>Costo: ${item.costo.toLocaleString("es-ES")}</Text>
-                <Text style={styles.maintenanceText}>Estado: {item.estado_mantencion}</Text>
-                <Text style={styles.maintenanceText}>Horas de Trabajo: {item.horas_trabajo}</Text>
-
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Tipo: {item.tipo_mantencion}</Text>
+                </Text>
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Fecha: {formatDate(item.fecha_mantencion)}</Text>
+                </Text>
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Descripción: {item.descripcion}</Text>
+                </Text>
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Costo: ${item.costo}</Text>
+                </Text>
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Estado: {item.estado_mantencion}</Text>
+                </Text>
+                <Text style={styles.maintenanceText}>
+                  <Text style={styles.boldText}>Horas de Trabajo: {item.horas_trabajo}</Text>
+                </Text>
+              
+                {/* Mostrar los insumos si existen */}
+                {item.insumos && item.insumos.length > 0 && (
+                <View>
+                  <Text style={styles.maintenanceText}>Insumos:</Text>
+                  {item.insumos.map((insumo) => (
+                    <Text key={insumo.insumo.nombre} style={styles.maintenanceText}>
+                      {insumo.insumo.nombre} - Cantidad: {insumo.cantidad}
+                    </Text>
+                  ))}
+                </View>
+              )}
                 {/* Ícono de editar mantencion pendiente*/}
                 {item.estado_mantencion === 'Pendiente' && (
                   <TouchableOpacity onPress={() => handleEditMaintenance(item)} style={styles.editIconContainer}>
@@ -281,6 +409,7 @@ export default function TabTwoScreen() {
           </TouchableOpacity>
         </View>
       </Modal>
+      {/* Modal para agregar matencion */}
       <Modal visible={addMaintenanceModalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Agregar Mantención</Text>
@@ -290,24 +419,12 @@ export default function TabTwoScreen() {
             value={newMaintenance?.tipo_mantencion || ''}
             onChangeText={(text) => handleInputChange('tipo_mantencion', text)}
           />
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowPicker(true)}
-          >
-            <Text style={styles.dateButtonText}>
-              {date ? `Fecha: ${date.toLocaleDateString()}` : 'Seleccionar Fecha'}
-            </Text>
-          </TouchableOpacity>
-
-          {showPicker && (
-            <DateTimePicker
-              value={date || new Date()}
-              mode="date"
-              display="default"
-              onChange={onChange}
-              minimumDate={new Date()}
-            />
-          )}
+          <TextInput
+            style={styles.input}
+            placeholder="YYYY-MM-DD"
+            value={newMaintenance?.fecha_mantencion || ''}
+            onChangeText={(text) => handleInputChange('fecha_mantencion', text)}
+          />
           <TextInput
             style={styles.input}
             placeholder="Descripción"
@@ -338,16 +455,53 @@ export default function TabTwoScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleInputChange('horas_trabajo', Number(text))}
           />
-          {/* Botón para guardar nueva mantención */}
-          <TouchableOpacity onPress={saveNewMaintenance} style={styles.addMaintenanceButton}>
-            <Text style={styles.addMaintenanceButtonText}>Guardar Mantención</Text>
-          </TouchableOpacity>
+          <View style={styles.insumoContainer}>
+            <Text>Agregar Insumos:</Text>
+            
+            <Picker
+              selectedValue={selectedInsumo}
+              onValueChange={(itemValue) => setSelectedInsumo(itemValue)}
+            >
+              <Picker.Item label="Seleccione un insumo..." value={null} />
+              {insumos.map((insumo) => (
+                <Picker.Item key={insumo.id_insumo} label={insumo.nombre} value={insumo} />
+              ))}
+            </Picker>
 
-          {/* Botón para cerrar el modal */}
-          <TouchableOpacity onPress={closeAddMaintenanceModal} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputCantidad}
+              placeholder="Cantidad"
+              keyboardType="numeric"
+              value={insumoQuantity.toString()}
+              onChangeText={(text) => setInsumoQuantity(Number(text))}
+            />
+
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedInsumo) {
+                  setAddedInsumos((prev) => [...prev, { ...selectedInsumo, cantidad: insumoQuantity }]);
+                  setSelectedInsumo(null);
+                  setInsumoQuantity(1);
+                }
+              }}
+              style={styles.addButton}
+            >
+              <Text style={styles.addButtonText}>+ Agregar Insumo</Text>
+            </TouchableOpacity>
+          </View>
+
+          </View>
+            {/* Botón para guardar nueva mantención */}
+            <TouchableOpacity onPress={saveNewMaintenance} style={styles.addMaintenanceButton}>
+              <Text style={styles.addMaintenanceButtonText}>Guardar Mantención</Text>
+            </TouchableOpacity>
+
+            {/* Botón para cerrar el modal */}
+            <TouchableOpacity onPress={closeAddMaintenanceModal} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
       </Modal>
 
       <Modal visible={editMaintenanceModalVisible} animationType="slide">
@@ -393,6 +547,42 @@ export default function TabTwoScreen() {
             <Picker.Item label="Seleccione estado..." value="" />
             <Picker.Item label="Completada" value="Completada" />
           </Picker>
+
+          <View style={styles.insumoContainer}>
+            <Picker
+              selectedValue={selectedInsumo}
+              onValueChange={(itemValue) => setSelectedInsumo(itemValue)}
+            >
+              <Picker.Item label="Seleccione un insumo..." value={null} />
+              {insumos.map((insumo) => (
+                <Picker.Item key={insumo.id_insumo} label={insumo.nombre} value={insumo} />
+              ))}
+            </Picker>
+
+            <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputCantidad}
+              placeholder="Cantidad"
+              keyboardType="numeric"
+              value={insumoQuantity.toString()}
+              onChangeText={(text) => setInsumoQuantity(Number(text))}
+            />
+
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedInsumo) {
+                  setAddedInsumos((prev) => [...prev, { ...selectedInsumo, cantidad: insumoQuantity }]);
+                  setSelectedInsumo(null);
+                  setInsumoQuantity(1);
+                }
+              }}
+              style={styles.addButton}
+            >
+              <Text style={styles.addButtonText}>+ Agregar Insumo</Text>
+            </TouchableOpacity>
+          </View>
+            
+          
           
           <TouchableOpacity onPress={saveEditedMaintenance} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Guardar Cambios</Text>
@@ -400,6 +590,7 @@ export default function TabTwoScreen() {
           <TouchableOpacity onPress={closeEditMaintenanceModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Cancelar</Text>
           </TouchableOpacity>
+        </View>
         </View>
       </Modal>
       
@@ -566,5 +757,39 @@ const styles = StyleSheet.create({
   pickerItem: {
     fontSize: 16,
     color: '#555',
+  },
+  insumoContainer: {
+    marginVertical: 20,
+  },
+  insumoItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  inputCantidad: {
+    flex: 1, // Asegura que el campo de entrada ocupe el máximo espacio disponible
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 10, // Espacio entre el campo de texto y el botón
+    height: 40,
+    borderColor: 'gray',
+    paddingLeft: 8,
+  },
+  inputContainer: {
+    flexDirection: 'row', // Alinea los elementos horizontalmente
+    alignItems: 'center', // Centra los elementos verticalmente
+    justifyContent: 'space-between', // Espacio entre los elementos
+    marginVertical: 8, // Espacio alrededor de la fila
+  },
+  addButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#007BFF', // Color del botón
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });

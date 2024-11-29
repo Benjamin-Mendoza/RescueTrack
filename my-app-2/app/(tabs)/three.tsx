@@ -41,6 +41,9 @@ const fetchMaintenances = async (): Promise<Maintenance[]> => {
   }
 };
 
+const currentYear = new Date().getFullYear(); // Obtiene el año actual
+
+
 const MaintenanceCostChart = () => {
   const [data, setData] = useState<{ trimestre: number; total_costo_trimestral: number }[]>([]);
   const [cantidadMantenimientos, setCantidadMantenimientos] = useState<number>(0);
@@ -105,7 +108,7 @@ const MaintenanceCostChart = () => {
       const maxLinesPerPage = 30; // Máximo número de líneas por página
       let currentLine = 0; // Contador de líneas actuales
   
-      page.drawText('Reporte de Mantenciones', {
+      page.drawText(`Reporte de Mantenciones - ${currentYear}`, {
         x: margin,
         y: height - margin,
         size: 30,

@@ -28,68 +28,77 @@ const ScheduleMaintenanceButton = () => {
     setDate(currentDate);
   };
 
+
+  
   const scheduleMaintenance = async () => {
     if (!date || !patente || !tipoMantencion) {
       Alert.alert('Por favor, completa todos los campos y selecciona una fecha para la mantención.');
       return;
     }
-
+  
     try {
       const { data: vehiculoData, error: vehiculoError } = await supabase
         .from('vehiculo')
         .select('id_vehiculo, patente')
         .eq('patente', patente)
         .single();
-
+  
       if (vehiculoError || !vehiculoData) {
         throw new Error('Vehículo no encontrado con la patente proporcionada.');
       }
-
+  
+      // Validar que `date` no sea null antes de llamar a toISOString
+      const formattedDate = date ? date.toISOString().split('T')[0] : null;
+  
+      if (!formattedDate) {
+        throw new Error('La fecha seleccionada no es válida.');
+      }
+  
       const { data: maintenanceData, error: maintenanceError } = await supabase
         .from('mantencion')
         .insert([
           {
             id_vehiculo: vehiculoData.id_vehiculo,
             tipo_mantencion: tipoMantencion,
-            fecha_mantencion: date.toISOString(),
+            fecha_mantencion: formattedDate,
             estado_mantencion: 'Pendiente',
           },
         ]);
-
+  
       if (maintenanceError) {
         throw new Error(maintenanceError.message);
       }
-
+  
       const notificationDate = new Date(date);
       notificationDate.setDate(notificationDate.getDate() - 1);
       notificationDate.setHours(9, 0, 0, 0);
-
+  
       const patenteVehiculo = vehiculoData.patente;
-
+  
       await Notifications.scheduleNotificationAsync({
         content: {
           title: 'Recordatorio de Mantención',
-          body: `Recuerda que tienes una mantención programada para el día ${date.toISOString().split('T')[0]} para el vehículo con patente ${patenteVehiculo}`,
+          body: `Recuerda que tienes una mantención programada para el día ${formattedDate} para el vehículo con patente ${patenteVehiculo}`,
         },
         trigger: { date: notificationDate },
       });
-
+  
       const { error: notificationError } = await supabase
         .from('notificacion')
         .insert([
           {
             id_vehiculo: vehiculoData.id_vehiculo,
             tipo_notificacion: 'Recordatorio de mantención',
-            mensaje: `Recordatorio: Mantención programada para el día ${date.toISOString().split('T')[0]} para el vehículo con patente ${patenteVehiculo}`,
+            mensaje: `Recordatorio: Mantención programada para el día ${formattedDate} para el vehículo con patente ${patenteVehiculo}`,
             fecha_notificacion: notificationDate.toISOString(),
             estado_notificacion: 'Pendiente',
           },
         ]);
-
+  
       if (notificationError) {
         throw new Error(notificationError.message);
       }
-
+  
       Alert.alert('Éxito', 'Mantención programada.');
       setPatente('');
       setTipoMantencion('');
@@ -99,6 +108,7 @@ const ScheduleMaintenanceButton = () => {
       Alert.alert('Error', 'No se pudo programar la mantención.');
     }
   };
+  
 
   return (
     <View style={styles.container}>
