@@ -363,22 +363,22 @@ export default function TabTwoScreen() {
             renderItem={({ item }) => (
               <View style={styles.maintenanceContainer}>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Tipo: {item.tipo_mantencion}</Text>
+                  <Text style={styles.boldText}>Tipo: </Text>{item.tipo_mantencion}
                 </Text>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Fecha: {formatDate(item.fecha_mantencion)}</Text>
+                  <Text style={styles.boldText}>Fecha: </Text>{formatDate(item.fecha_mantencion)}
                 </Text>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Descripción: {item.descripcion}</Text>
+                  <Text style={styles.boldText}>Descripción: </Text>{item.descripcion}
                 </Text>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Costo: ${item.costo}</Text>
+                  <Text style={styles.boldText}>Costo: </Text>${item.costo}
                 </Text>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Estado: {item.estado_mantencion}</Text>
+                  <Text style={styles.boldText}>Estado: </Text>{item.estado_mantencion}
                 </Text>
                 <Text style={styles.maintenanceText}>
-                  <Text style={styles.boldText}>Horas de Trabajo: {item.horas_trabajo}</Text>
+                  <Text style={styles.boldText}>Horas de Trabajo: </Text>{item.horas_trabajo}
                 </Text>
               
                 {/* Mostrar los insumos si existen */}
