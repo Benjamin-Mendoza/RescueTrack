@@ -58,9 +58,9 @@ export default function TabTwoScreen() {
   const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Para un solo insumo seleccionado
   const [insumos, setInsumos] = useState<Insumo[]>([]); // Para una lista de insumos
 
-  //console.log('insumoQuantity:', insumoQuantity);
-  //console.log('selectedInsumo:', selectedInsumo);
-  //console.log('insumos:', insumos);
+  //console.log('insumoQuantity:', insumoQuantity); // Depuración
+  //console.log('selectedInsumo:', selectedInsumo); // Depuración
+  //console.log('insumos:', insumos); // Depuración
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -314,17 +314,19 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Vehículos</Text>
 
-      {/* Campo de búsqueda */}
-      <View style={styles.searchContainer}>
-      <AntDesign name="search1" size={20} color="#aaa" style={styles.icon} />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="   Buscar por patente..."
-        placeholderTextColor="#aaa"
-        value={searchTerm}
-        onChangeText={handleSearch}
-      />
-    </View>
+      {/* Contenedor de búsqueda y filtro */}
+      <View style={styles.searchFilterContainer}>
+        <View style={styles.searchContainer}>
+          <AntDesign name="search1" size={20} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Buscar por patente..."
+            placeholderTextColor="#aaa"
+            value={searchTerm}
+            onChangeText={handleSearch}
+          />
+        </View>
+      </View>
 
     <FlatList
       data={filteredVehicles}
@@ -334,6 +336,7 @@ export default function TabTwoScreen() {
           onPress={() => handleVehiclePress(item)}
           style={styles.vehicleContainer}
         >
+          {/* Información del vehículo */}
           <View style={styles.vehicleInfo}>
             <Text style={styles.vehicleText}>
               <Text style={styles.boldText}>Patente: </Text>{item.patente}
@@ -348,12 +351,19 @@ export default function TabTwoScreen() {
               <Text style={styles.boldText}>Estado: </Text>{item.estado_vehiculo}
             </Text>
           </View>
+          {/* Ícono de la flecha */}
           <View style={styles.iconContainer}>
-            <Ionicons name="caret-forward-circle-outline" size={32} color="#868486" />
+            <Ionicons name="chevron-forward-outline" style={styles.arrowIcon} />
           </View>
+
+          {/* Formas decorativas */}
+          <View style={styles.decorativeShapes} />
+          <View style={styles.additionalShape} />
         </TouchableOpacity>
       )}
     />
+
+
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Mantenciones de {selectedVehicle?.patente}</Text>
@@ -612,6 +622,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   searchContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f2f2f2',
@@ -631,37 +642,70 @@ const styles = StyleSheet.create({
     color: '#333', 
     paddingVertical: 0, 
   },
+  searchFilterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   icon: {
     marginRight: 10, 
   },
   vehicleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 10,
-    marginHorizontal: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    elevation: 3, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden', // Para recortar las formas decorativas
   },
   vehicleInfo: {
     flex: 1,
   },
   vehicleText: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 5, 
+    fontSize: 14,
+    color: '#333333',
+    marginBottom: 4,
   },
   boldText: {
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
+    color: '#000000',
   },
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  arrowIcon: {
+    color: '#868486',
+    fontSize: 24,
+  },
+  // Estilo para las formas decorativas
+  decorativeShapes: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 100,
+    height: 50,
+    backgroundColor: 'rgba(255, 120, 120, 0.3)', 
+    borderTopLeftRadius: 50,
+    zIndex: -1, // Detrás del contenido
+  },
+  additionalShape: {
+    position: 'absolute',
+    bottom: -10,
+    right: -10,
+    width: 80,
+    height: 40,
+    backgroundColor: 'rgba(220, 20, 60, 0.5)',
+    borderTopLeftRadius: 40,
+    zIndex: -2, // Más detrás
   },
   modalContainer: {
     flex: 1,

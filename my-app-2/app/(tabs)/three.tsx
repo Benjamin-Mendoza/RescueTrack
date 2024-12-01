@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions, StyleSheet, ScrollView, Button, Alert, Pressable, TouchableOpacity } from 'react-native';
-import { BarChart, LineChart  } from 'react-native-chart-kit';
+import { LineChart  } from 'react-native-chart-kit';
 import { supabase } from '@/app/supabaseClient';
 import { PDFDocument, rgb } from 'pdf-lib';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 interface Maintenance {
@@ -181,10 +182,22 @@ const MaintenanceCostChart = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Costos</Text>
 
-      <View style={styles.summaryContainer}>
-        <Text style={styles.summaryTitle}>Resumen de Mantenimientos</Text>
-        <Text>Cantidad de Mantenimientos: {cantidadMantenimientos}</Text>
-        <Text>Total Costo: ${totalCosto.toLocaleString("es-ES")}</Text>
+      <View style={styles.containerResume}>
+        <View style={styles.summaryContainer}>
+          <Text style={styles.summaryTitle}>Resumen</Text>
+          <Text>Cantidad de Mantenimientos: {cantidadMantenimientos}</Text>
+          <Text>Total Costo: ${totalCosto.toLocaleString("es-ES")}</Text>
+        </View>
+
+        <View style={styles.reportContainer}>
+          <Text style={styles.summaryTitle}>Reporte</Text>
+          <Text>Informe de los mantenimientos del año</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.reportButton} onPress={generatePDF}>
+              <Ionicons name="download" size={20} color="gray" />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
       <Text style={styles.title2}>Costo de Mantenciones Trimestral - {new Date().getFullYear()}</Text>
@@ -218,15 +231,6 @@ const MaintenanceCostChart = () => {
         bezier
         style={styles.chart}
       />
-
-        <View style={styles.buttonContainer}>
-          <Text style={styles.summaryTitle}>Reporte de Mantenimientos</Text>
-          <Text>Resumen de los mantenimientos del año actual</Text>
-          <TouchableOpacity style={styles.reportButton} onPress={generatePDF}>
-            <Text style={styles.reportButtonText}>Generar PDF</Text>
-          </TouchableOpacity>
-        </View>
-      
     </ScrollView>
   );
 };
@@ -237,53 +241,71 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     backgroundColor: '#fff' 
-},
+  },
   title: { 
     fontSize: 24, 
     fontWeight: 'bold', 
     marginBottom: 20, 
     textAlign: 'center' 
-},
+  },
   title2: { 
     fontSize: 20, 
     textAlign: 'center', 
-    marginBottom: 20 
-},
+    marginBottom: 20, 
+    paddingTop: 20
+  },
   chart: { 
     marginVertical: 8, 
     borderRadius: 10 
-},
+  },
   summaryContainer: { 
-    marginTop: 10, 
     padding: 10, 
     marginBottom: 20, 
-    backgroundColor: '#f0f0f0', 
-    borderRadius: 10 
-},
+    backgroundColor: '#fff', 
+    borderRadius: 10,
+    width: '47%', // Ajusta el tamaño de cada contenedor
+    height: 150, // El mismo valor para hacerlo cuadrado
+    justifyContent: 'space-around', // Alinea los elementos dentro del contenedor
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   summaryTitle: { 
-    fontSize: 18, 
-    fontWeight: 'bold', 
-    marginBottom: 10 
-},
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   reportButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 20,
     marginTop: 20,
     alignItems: 'center',
-},
-  reportButtonText: {
-    color: '#FFFFFF', 
-    fontSize: 16,
-    fontWeight: 'bold',
-},
-  buttonContainer: { 
-    marginTop: 10, 
+  },
+  reportContainer: { 
     padding: 10, 
     marginBottom: 20, 
-    backgroundColor: '#F0F0F0', 
+    backgroundColor: '#fff', 
     borderRadius: 10,
-},
+    width: '47%', // Ajusta el tamaño de cada contenedor
+    height: 150, // El mismo valor para hacerlo cuadrado
+    justifyContent: 'space-around', // Alinea los elementos dentro del contenedor
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  containerResume: {
+    paddingTop: 40,
+    flexDirection: 'row', // Alinea los dos View horizontalmente
+    justifyContent: 'space-between', // Deja espacio entre ellos
+  },
+  buttonContainer: {
+    alignItems: 'center',
+  }
 });
 
 export default MaintenanceCostChart;
