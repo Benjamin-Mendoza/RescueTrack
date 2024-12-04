@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 import './registro.css';
 
 const Registro = () => {
@@ -33,22 +34,44 @@ const Registro = () => {
     
     const emailRegex = /^[\w-]+(\.[\w-]+)*@rescue\.com$/;
     if (!emailRegex.test(email)) {
-      alert('El correo electrónico debe tener el dominio @rescue.com.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo electrónico inválido',
+        text: 'El correo electrónico debe tener el dominio @rescue.com.',
+        confirmButtonColor: '#154780',
+      });
       return false;
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     if (!passwordRegex.test(contrasenia)) {
-      alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una minúscula.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Contraseña inválida',
+        text: 'La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una minúscula.',
+        confirmButtonColor: '#154780',
+      });
       return false;
     }
 
     if (!rol) {
-      alert('Por favor, selecciona un rol.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Rol requerido',
+        text: 'Por favor, selecciona un rol.',
+        color: '#856404',
+        confirmButtonColor: '#856404'
+      });
       return false;
     }
 
     if (!id_compania) {
-      alert('Por favor, selecciona una compañía.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Compañía requerida',
+        text: 'Por favor, selecciona una compañía.',
+        color: '#856404',
+        confirmButtonColor: '#856404',
+      });
       return false;
     }
 
@@ -80,7 +103,12 @@ const Registro = () => {
       console.log('Respuesta del backend:', data);
   
       if (response.ok) {
-        alert('Usuario registrado con éxito');
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Usuario registrado con éxito.',
+          confirmButtonColor: '#154780',
+        });
         router.push('/usuarioslista');
         setFormData({
           nombre: '',
@@ -92,14 +120,23 @@ const Registro = () => {
         });
       } else {
         console.error('Error en el registro:', data.error);
-        alert('Hubo un problema al registrar el usuario');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el registro',
+          text: 'Hubo un problema al registrar el usuario.',
+          confirmButtonColor: '#154780',
+        });
       }
     } catch (error) {
       console.error('Error en el fetch:', error);
-      alert('Error de conexión con el servidor');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'Error de conexión con el servidor.',
+        confirmButtonColor: '#154780',
+      });
     }
   };
-  
   
 
   return (
@@ -195,20 +232,22 @@ const Registro = () => {
               >
                 <option value="" disabled>Seleccionar Compañía</option>
                 <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-                <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
-                <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-                <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
-                <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
-                <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
-                <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-                <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-                <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-                <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+                <option value="2">SEGUNDA COMPAÑÍA "Bomba Alemania"</option>
+                <option value="3">TERCERA COMPAÑÍA "Bomba Colón"</option>
+                <option value="4">CUARTA COMPAÑÍA "Bomba Talcahuano"</option>
+                <option value="5">QUINTA COMPAÑÍA "Bomba Lota"</option>
+                <option value="6">SEXTA COMPAÑÍA "Bomba Santa Clara"</option>
+                <option value="7">SÉPTIMA COMPAÑÍA "Bomba Ríos"</option>
+                <option value="8">OCTAVA COMPAÑÍA "Bomba Las Salinas"</option>
+                <option value="9">NOVENA COMPAÑÍA "Bomba San Vicente"</option>
+                <option value="11">UNDÉCIMA COMPAÑÍA "Bomba Hualpén"</option>
               </select>
             </div>
           </div>
 
-          <button className="button" type="submit">Registrarse</button>
+          <div className="mt-4 text-center">
+            <button type="submit" className="button">Registrar</button>
+          </div>
         </form>
       </div>
     </div>
@@ -216,4 +255,3 @@ const Registro = () => {
 };
 
 export default Registro;
-

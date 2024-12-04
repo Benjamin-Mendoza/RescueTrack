@@ -1,7 +1,8 @@
 "use client";
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { supabase } from './supabaseClient'; 
+import { useRouter } from 'next/navigation';
+import { supabase } from './supabaseClient';
+import Swal from 'sweetalert2';
 import './registrovehiculo.css';
 
 interface Vehiculo {
@@ -17,11 +18,11 @@ interface Vehiculo {
 
 async function createVehiculo(newVehiculo: Vehiculo) {
   const { data, error } = await supabase
-    .from('vehiculo') 
+    .from('vehiculo')
     .insert([newVehiculo]);
 
   if (error) {
-    throw new Error(error.message); 
+    throw new Error(error.message);
   }
 
   return data;
@@ -47,7 +48,12 @@ export default function AgregarVehiculoForm() {
       !patente || !marca || !modelo || !anio || !tipo_vehiculo || 
       !estado_vehiculo || !kilometraje || !id_compania
     ) {
-      alert('Todos los campos son obligatorios');
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: 'Todos los campos son obligatorios',
+        confirmButtonColor: '#154780',
+      });
       return;
     }
 
@@ -64,7 +70,13 @@ export default function AgregarVehiculoForm() {
       };
 
       await createVehiculo(newVehiculo);
-      alert('Vehículo agregado con éxito');
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Vehículo agregado con éxito',
+        confirmButtonColor: '#154780',
+      });
+
       router.push('/lista'); 
       setPatente('');
       setMarca('');
@@ -76,7 +88,12 @@ export default function AgregarVehiculoForm() {
       setCompania('');
     } catch (error) {
       console.error('Error al agregar el vehículo:', error);
-      alert('Error al agregar el vehículo');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al agregar el vehículo',
+        confirmButtonColor: '#154780',
+      });
     }
   };
 
@@ -116,7 +133,12 @@ export default function AgregarVehiculoForm() {
         if (year >= 1990 && year <= currentYear) {
           setAnio(year)
         } else {
-          alert(`El año debe estar entre 1990 y ${currentYear}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Año inválido',
+            text: `El año debe estar entre 1990 y ${currentYear}`,
+            confirmButtonColor: '#154780',
+          });
           setAnio('');
         }
       } else {
@@ -125,16 +147,20 @@ export default function AgregarVehiculoForm() {
     }
   };
   
-const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = Number(e.target.value);
-  if (value > 0 && value <= 500000) {
-    setKilometraje(value);
-  } else {
-    setKilometraje(''); 
-    alert('El kilometraje debe estar entre 1 y 500,000 km');
-  }
-};
-
+  const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value > 0 && value <= 500000) {
+      setKilometraje(value);
+    } else {
+      setKilometraje(''); 
+      Swal.fire({
+        icon: 'error',
+        title: 'Kilometraje inválido',
+        text: 'El kilometraje debe estar entre 1 y 500,000 km',
+        confirmButtonColor: '#154780',
+      });
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
@@ -215,8 +241,8 @@ const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             required
           >
             <option value="" disabled>Seleccionar Estado</option>
-            <option value="Operativo">Operativo</option>
-            <option value="En Mantención">En Mantención</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
           </select>
         </div>
       </div>
@@ -242,16 +268,17 @@ const handleKilometrajeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             required
           >
             <option value="" disabled>Seleccionar Compañía</option>
-            <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-            <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
-            <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-            <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
-            <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
-            <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
-            <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-            <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-            <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-            <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
+                <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="2">SEGUNDA COMPAÑÍA "Bomba Alemania"</option>
+                <option value="3">TERCERA COMPAÑÍA "Bomba Colón"</option>
+                <option value="4">CUARTA COMPAÑÍA "Bomba Talcahuano"</option>
+                <option value="5">QUINTA COMPAÑÍA "Bomba Lota"</option>
+                <option value="6">SEXTA COMPAÑÍA "Bomba Santa Clara"</option>
+                <option value="7">SÉPTIMA COMPAÑÍA "Bomba Ríos"</option>
+                <option value="8">OCTAVA COMPAÑÍA "Bomba Las Salinas"</option>
+                <option value="9">NOVENA COMPAÑÍA "Bomba San Vicente"</option>
+                <option value="10">DÉCIMA COMPAÑÍA "Bomba Talcahuano"</option>
+                <option value="11">UNDÉCIMA COMPAÑÍA "Bomba Hualpén"</option>
           </select>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
-
+import Swal from 'sweetalert2';
 
 interface Usuario {
   id_usuario: number;
@@ -49,10 +49,14 @@ async function updateUsuario(id_usuario: number, updatedData: Partial<Usuario>) 
     return res.json();
   } catch (error) {
     console.error('Error updating user:', error);
-    alert('Error al actualizar el usuario: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al actualizar el usuario',
+      text: error instanceof Error ? error.message : 'Error desconocido',
+      confirmButtonColor: '#3085d6',
+    });
   }
 }
-
 
 interface UsuarioFormProps {
   usuario: Usuario;
@@ -70,10 +74,14 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
   const [id_compania, setid_Compania] = useState<number>(usuario.id_compania || 1);
 
   useEffect(() => {
-
-        const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     if (!token) {
-      alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Sesión expirada o no autorizada',
+        text: 'Por favor, inicia sesión nuevamente.',
+        confirmButtonColor: '#3085d6',
+      });
       router.push('/login');
       return;
     }
@@ -82,7 +90,7 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
     setEmail(usuario.email);
     setContrasenia(usuario.contrasenia);
     setRol(usuario.rol);
-    setid_Compania(usuario.id_compania || 1); 
+    setid_Compania(usuario.id_compania || 1);
   }, [usuario]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -96,23 +104,43 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
   const validateForm = () => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@rescue\.com$/;
     if (!emailRegex.test(email)) {
-      alert('El correo electrónico debe tener el dominio @rescue.com.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo electrónico inválido',
+        text: 'El correo electrónico debe tener el dominio @rescue.com.',
+        confirmButtonColor: '#154780',
+      });
       return false;
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     if (!passwordRegex.test(contrasenia)) {
-      alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una minúscula.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Contraseña inválida',
+        text: 'La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una minúscula.',
+        confirmButtonColor: '#154780',
+      });
       return false;
     }
 
     if (!rol) {
-      alert('Por favor, selecciona un rol.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Rol requerido',
+        text: 'Por favor, selecciona un rol.',
+        confirmButtonColor: '#3085d6',
+      });
       return false;
     }
 
     if (!id_compania) {
-      alert('Por favor, selecciona una compañía.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Compañía requerida',
+        text: 'Por favor, selecciona una compañía.',
+        confirmButtonColor: '#3085d6',
+      });
       return false;
     }
 
@@ -125,112 +153,123 @@ export default function UsuarioForm({ usuario, setUsuario }: UsuarioFormProps) {
 
     try {
       await updateUsuario(usuario.id_usuario, { nombre, apellido, email, contrasenia, rol, id_compania });
-      alert('Usuario actualizado con éxito');
+      Swal.fire({
+        icon: 'success',
+        title: 'Usuario actualizado con éxito',
+        confirmButtonColor: '#154780',
+      });
       const updatedUsuario = await getUsuario(usuario.id_usuario);
       setUsuario(updatedUsuario);
 
       setTimeout(() => {
-        router.push('/usuarioslista'); 
+        router.push('/usuarioslista');
       }, 500);
     } catch (error) {
       console.error(error);
-      alert('Error al actualizar el usuario');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar el usuario',
+        text: 'Hubo un problema al actualizar el usuario. Intenta nuevamente.',
+        confirmButtonColor: '#154780',
+      });
     }
   };
 
   return (
     <div className="c1">
       <div className="c2">
-      <h2 className="titulo">Editar Usuario</h2>
-      <form onSubmit={handleSubmit} className="form">
-        <div className="input-group">
-          <div>
-            <label className="label">Nombre:</label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="input"
-              required
-              maxLength={30}
-            />
+        <h2 className="titulo">Editar Usuario</h2>
+        <form onSubmit={handleSubmit} className="form">
+          <div className="input-group">
+            <div>
+              <label className="label">Nombre:</label>
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="input"
+                required
+                maxLength={30}
+              />
+            </div>
+            <div>
+              <label className="label">Apellido:</label>
+              <input
+                type="text"
+                value={apellido}
+                onChange={(e) => setApellido(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="input"
+                required
+                maxLength={30}
+              />
+            </div>
           </div>
-          <div>
-            <label className="label">Apellido:</label>
-            <input
-              type="text"
-              value={apellido}
-              onChange={(e) => setApellido(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="input"
-              required
-              maxLength={30}
-            />
+          <div className="input-group">
+            <div>
+              <label className="label">Email:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+            <div>
+              <label className="label">Contraseña:</label>
+              <input
+                type="password"
+                value={contrasenia}
+                onChange={(e) => setContrasenia(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
           </div>
-        </div>
-        <div className="input-group">
-          <div>
-            <label className="label">Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              required
-            />
+          <div className="input-group">
+            <div>
+              <label className="label">Rol:</label>
+              <select
+                value={rol}
+                onChange={(e) => setRol(e.target.value)}
+                className="select"
+                required
+              >
+                <option value="" disabled>Seleccionar Rol</option>
+                <option value="secretario">Secretario</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="capitan">Capitán</option>
+                <option value="teniente">Teniente</option>
+              </select>
+            </div>
+            <div>
+              <label className="label">Compañía:</label>
+              <select
+                value={id_compania}
+                onChange={(e) => setid_Compania(Number(e.target.value))}
+                className="select"
+                required
+              >
+                <option value="" disabled>Seleccionar Compañía</option>
+                <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
+                <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
+                <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
+                <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
+                <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
+                <option value="6">SEXTA COMPAÑÍA "Bomba Talcahuano"</option>
+                <option value="7">SÉPTIMA COMPAÑÍA "Bomba Chiguayante"</option>
+                <option value="8">OCTAVA COMPAÑÍA "Bomba Coronel"</option>
+                <option value="9">NOVENA COMPAÑÍA "Bomba Penco"</option>
+                <option value="11">UNDÉCIMA COMPAÑÍA "Bomba Hualpén"</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label className="label">Contraseña:</label>
-            <input
-              type="password"
-              value={contrasenia}
-              onChange={(e) => setContrasenia(e.target.value)}
-              className="input"
-              required
-            />
+          <div className="input-group">
+            <button type="submit" className="button">Guardar cambios</button>
           </div>
-        </div>
-        <div className="input-group">
-          <div>
-            <label className="label">Rol:</label>
-            <select
-              value={rol}
-              onChange={(e) => setRol(e.target.value)}
-              className="select"
-              required
-            >
-              <option value="" disabled>Seleccionar Rol</option>
-              <option value="secretario">Secretario</option>
-              <option value="mecanico">Mecánico</option>
-              <option value="capitan">Capitán</option>
-              <option value="teniente">Teniente</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">Compañía:</label>
-            <select
-              value={id_compania}
-              onChange={(e) => setid_Compania(Number(e.target.value))}
-              className="select"
-              required
-            >
-              <option value="" disabled>Seleccionar Compañía</option>
-              <option value="1">PRIMERA COMPAÑÍA "Eduardo Cornou Chabry"</option>
-              <option value="2">SEGUNDA COMPAÑÍA "Zapadores"</option>
-              <option value="3">TERCERA COMPAÑÍA "Salvadora y Guardia de la Propiedad"</option>
-              <option value="4">CUARTA COMPAÑÍA "Umberto Primo"</option>
-              <option value="5">QUINTA COMPAÑÍA "Bomba Chile"</option>
-              <option value="6">SEXTA COMPAÑÍA "Salvadora"</option>
-              <option value="7">SÉPTIMA COMPAÑÍA "Bomba Almirante Calixto Rogers"</option>
-              <option value="8">OCTAVA COMPAÑÍA "Bomba Huachipato"</option>
-              <option value="9">NOVENA COMPAÑÍA "Juan Guillermo Sosa Severino"</option>
-              <option value="11">UNDÉCIMA COMPAÑÍA "Bomba San Vicente"</option>
-            </select>
-          </div>
-        </div>
-        <button type="submit" className="button">Guardar cambios</button>
-      </form>
+        </form>
       </div>
     </div>
   );

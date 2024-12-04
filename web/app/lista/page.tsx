@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './vehiculos.css';
+import Swal from 'sweetalert2';
 
 interface Vehiculo {
   id_vehiculo: number;
@@ -87,6 +88,8 @@ export default function VehiculosPage() {
     setFiltroEstado(e.target.value);
   };
 
+  
+
   async function deleteVehiculo(id_vehiculo: number) {
     try {
       const token = localStorage.getItem('token');
@@ -110,22 +113,47 @@ export default function VehiculosPage() {
     }
   }
   
-
   const handleEliminarVehiculo = async (id_vehiculo: number) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este vehículo?')) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      confirmButtonColor: '#154780',
+      cancelButtonText: 'Cancelar',
+    });
+  
+    if (result.isConfirmed) {
       try {
         await deleteVehiculo(id_vehiculo);
-        alert('Vehículo eliminado con éxito');
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: 'Vehículo eliminado con éxito',
+          confirmButtonColor: '#154780',
+        });
         setVehiculos((prev) => prev.filter((vehiculo) => vehiculo.id_vehiculo !== id_vehiculo));
       } catch (error: unknown) {
         if (error instanceof Error) {
-          alert('Error al eliminar el vehículo: ' + error.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al eliminar el vehículo: ' + error.message,
+            confirmButtonColor: '#154780',
+          });
         } else {
-          alert('Error desconocido al eliminar el vehículo.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error desconocido',
+            text: 'Error desconocido al eliminar el vehículo.',
+            confirmButtonColor: '#154780',
+          });
         }
       }
     }
   };
+  
   
 
   const vehiculosFiltrados = vehiculos
@@ -143,11 +171,11 @@ export default function VehiculosPage() {
 
       <div className="filtros">
         <label>
-          Estado:
+          Estado del vehículo:
           <select value={filtroEstado} onChange={handleFiltroEstadoCambio}>
             <option value="">Todos</option>
-            <option value="En Mantención">En Mantención</option>
-            <option value="Operativo">Operativo</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
           </select>
         </label>
       </div>

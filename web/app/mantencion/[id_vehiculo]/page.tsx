@@ -74,7 +74,7 @@ export default function MantencionesPage() {
                                 <td>{mantencion.tipo_mantencion}</td>
                                 <td>{mantencion.descripcion}</td>
                                 <td>{formatFechaMantencion(mantencion.fecha_mantencion)}</td>
-                                <td>{mantencion.costo}</td>
+                                <td>${mantencion.costo}</td>
                                 <td>{mantencion.estado_mantencion}</td>
                             </tr>
                         ))}

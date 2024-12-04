@@ -14,7 +14,7 @@ interface Costo {
 }
 
 interface VehiculoEstado {
-  estado_vehiculo: "Operativo" | "En Mantención";
+  estado_vehiculo: "Activo" | "Inactivo";
   total_vehiculos: number;
 }
 
@@ -95,17 +95,17 @@ const Dashboard = () => {
     ],
   };
 
-  const vehiculosMap: Record<string, number> = { Operativo: 0, "En Mantención": 0 };
+  const vehiculosMap: Record<string, number> = { Activo: 0, Inactivo: 0 };
   vehiculosEstado.forEach(({ estado_vehiculo, total_vehiculos }) => {
     vehiculosMap[estado_vehiculo] = total_vehiculos;
   });
 
   const vehiculosData = {
-    labels: ["Operativo", "En Mantención"],
+    labels: ["Activo", "Inactivo"],
     datasets: [
       {
         label: "Estado de Vehículos",
-        data: [vehiculosMap["Operativo"], vehiculosMap["En Mantención"]],
+        data: [vehiculosMap["Activo"], vehiculosMap["Inactivo"]],
         backgroundColor: ["#0066cc", "#80b3ff"],
       },
     ],

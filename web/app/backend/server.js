@@ -112,12 +112,22 @@ app.get('/historial', authenticateToken, async (req, res) => {
   try {
     const { id_compania } = req.user;
     const { data, error } = await supabase
-      .from('insumo')
+      .from('mantencion_insumo')
       .select(`
-        nombre,
         cantidad,
-        costo_unitario,
-        costo_historico,
+        insumo (
+          nombre,
+          costo_unitario,
+          costo_historico,
+          proveedor (
+            nombre,
+            contacto,
+            tipo_servicio,
+            direccion,
+            telefono,
+            email
+          )
+        ),
         mantencion (
           tipo_mantencion,
           fecha_mantencion,
@@ -126,30 +136,27 @@ app.get('/historial', authenticateToken, async (req, res) => {
           estado_mantencion,
           vehiculo (
             patente,
-            id_compania 
+            id_compania
           )
-        ),
-        proveedor (
-          nombre, 
-          contacto,
-          tipo_servicio,
-          direccion,
-          telefono,
-          email
         )
       `);
 
     if (error) {
-      console.error('Error al obtener el historial con mantención:', error);
+      console.error('Error al obtener el historial:', error);
       return res.status(500).json({ error: error.message });
     }
+
+    // Filtrar los datos por id_compania
     const filteredData = data.filter(item => item.mantencion?.vehiculo?.id_compania === id_compania);
+
     res.status(200).json(filteredData);
   } catch (err) {
     console.error('Error en el backend al obtener el historial:', err);
     res.status(500).send('Error en el servidor');
   }
 });
+
+
 
 // Editar vehiculo
 

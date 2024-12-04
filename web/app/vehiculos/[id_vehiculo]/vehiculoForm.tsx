@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { useRouter } from 'next/navigation'; 
-import './editar.css'; 
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+import './editar.css';
 
 interface Vehiculo {
   id_vehiculo: number;
@@ -49,26 +50,46 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
     e.preventDefault();
 
     if (kilometraje < vehiculo.kilometraje) {
-      alert('El kilometraje no puede ser menor al kilometraje actual');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El kilometraje no puede ser menor al kilometraje actual',
+        confirmButtonColor: '#154780',
+      });
       return;
     }
 
     if (kilometraje > 500000) {
-      alert('El kilometraje no puede ser mayor a 500,000');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El kilometraje no puede ser mayor a 500,000',
+        confirmButtonColor: '#154780',
+      });
       return;
     }
 
     try {
       await updateVehiculo(vehiculo.id_vehiculo, { estado_vehiculo, kilometraje });
-      alert('Vehículo actualizado con éxito');
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Vehículo actualizado con éxito',
+        confirmButtonColor: '#154780',
+      });
 
       const updatedVehiculo = { ...vehiculo, estado_vehiculo, kilometraje };
       setVehiculo(updatedVehiculo);
-      
+
       router.push('/lista');
     } catch (error) {
       console.error('Error en la actualización:', error);
-      alert('Error al actualizar el vehículo');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al actualizar el vehículo',
+        confirmButtonColor: '#154780',
+      });
     }
   };
 
@@ -84,8 +105,8 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
               onChange={(e) => setEstado(e.target.value)}
               className="input"
             >
-              <option value="Operativo">Operativo</option>
-              <option value="En Mantención">En Mantención</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
             </select>
           </div>
           <div>
@@ -103,6 +124,3 @@ export default function VehiculoForm({ vehiculo, setVehiculo }: VehiculoFormProp
     </div>
   );
 }
-
-
-

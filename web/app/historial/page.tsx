@@ -4,12 +4,24 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import * as XLSX from 'xlsx';
 import './historial.css';
+import Swal from 'sweetalert2';
 
 interface Historial {
-  nombre: string;
   cantidad: number;
-  costo_unitario: number;
-  costo_historico: number;
+  insumo: {
+    nombre: string;
+    cantidad: number;
+    costo_unitario: number;
+    costo_historico: number;
+    proveedor: {
+      nombre: string;
+      contacto: string;
+      tipo_servicio: string;
+      direccion: string;
+      telefono: string;
+      email: string;
+    };
+  };
   mantencion: {
     tipo_mantencion: string;
     fecha_mantencion: string;
@@ -21,15 +33,8 @@ interface Historial {
       id_compania: number;
     };
   };
-  proveedor: {
-    nombre: string;
-    contacto: string;
-    tipo_servicio: string;
-    direccion: string;
-    telefono: string;
-    email: string;
-  };
 }
+
 
 export default function HistorialMantenciones() {
   const [historial, setHistorial] = useState<Historial[]>([]);
@@ -81,49 +86,76 @@ export default function HistorialMantenciones() {
   }, [router]);
 
   const exportToExcel = () => {
-    const trimester = prompt('Ingrese el trimestre que desea exportar (T1, T2, T3 o T4)');
-    if (!trimester || !['T1', 'T2', 'T3', 'T4'].includes(trimester)) {
-      alert('Trimestre no válido. Por favor, ingrese T1, T2, T3 o T4.');
-      return;
-    }
+    Swal.fire({
+      title: 'Exportar a Excel',
+      text: 'Ingrese el trimestre que desea exportar (T1, T2, T3 o T4):',
+      input: 'text',
+      inputPlaceholder: 'Ejemplo: T1',
+      showCancelButton: true,
+      confirmButtonColor: '#154780',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value || !['T1', 'T2', 'T3', 'T4'].includes(value.toUpperCase())) {
+          return 'Por favor, ingrese un trimestre válido (T1, T2, T3 o T4)';
+        }
+        return null;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const trimester = result.value.toUpperCase();
+  
+        const filteredHistorial = historial.filter((item) => {
+          const month = new Date(item.mantencion.fecha_mantencion).getMonth() + 1;
+          if (trimester === 'T1') return month >= 1 && month <= 3;
+          if (trimester === 'T2') return month >= 4 && month <= 6;
+          if (trimester === 'T3') return month >= 7 && month <= 9;
+          if (trimester === 'T4') return month >= 10 && month <= 12;
+        });
+  
+        if (filteredHistorial.length === 0) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Sin datos',
+            text: `No hay datos para el trimestre ${trimester}.`,
+            iconColor: '#154780',
+            confirmButtonColor: '#154780',
+          });
+          return;
+        }
 
-    const filteredHistorial = historial.filter((item) => {
-      const month = new Date(item.mantencion.fecha_mantencion).getMonth() + 1;
-      if (trimester === 'T1') return month >= 1 && month <= 3;
-      if (trimester === 'T2') return month >= 4 && month <= 6;
-      if (trimester === 'T3') return month >= 7 && month <= 9;
-      if (trimester === 'T4') return month >= 10 && month <= 12;
+        const worksheet = XLSX.utils.json_to_sheet(filteredHistorial.map(item => ({
+          'Patente': item.mantencion.vehiculo.patente,
+          'Tipo de Mantención': item.mantencion.tipo_mantencion,
+          'Fecha Mantención': item.mantencion.fecha_mantencion,
+          'Descripción': item.mantencion.descripcion,
+          'Costo': item.mantencion.costo,
+          'Estado': item.mantencion.estado_mantencion,
+          'Insumo': item.insumo.nombre,
+          'Cantidad': item.cantidad,
+          'Costo Unitario': item.insumo.costo_unitario,
+          'Costo Histórico': item.insumo.costo_historico,
+          'Proveedor': item.insumo.proveedor.nombre,
+          'Nombre': item.insumo.proveedor.contacto,
+          'Tipo de Servicio': item.insumo.proveedor.tipo_servicio,
+          'Dirección': item.insumo.proveedor.direccion,
+          'Teléfono': item.insumo.proveedor.telefono,
+          'Email': item.insumo.proveedor.email
+        })));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, `Historial_Trimestre_${trimester}`);
+        XLSX.writeFile(workbook, `historial_mantenciones_trimestre_${trimester}.xlsx`);
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Exportación exitosa',
+          text: `El historial del trimestre ${trimester} ha sido exportado correctamente.`,
+          confirmButtonColor: '#154780',
+        });
+      }
     });
-
-    if (filteredHistorial.length === 0) {
-      alert('No hay datos para el trimestre seleccionado.');
-      return;
-    }
-
-    const worksheet = XLSX.utils.json_to_sheet(filteredHistorial.map(item => ({
-      'Patente': item.mantencion.vehiculo.patente,
-      'Tipo de Mantención': item.mantencion.tipo_mantencion,
-      'Fecha Mantención': item.mantencion.fecha_mantencion,
-      'Descripción': item.mantencion.descripcion,
-      'Costo': item.mantencion.costo,
-      'Estado': item.mantencion.estado_mantencion,
-      'Insumo': item.nombre,
-      'Cantidad': item.cantidad,
-      'Costo Unitario': item.costo_unitario,
-      'Costo Histórico': item.costo_historico,
-      'Proveedor': item.proveedor.nombre,
-      'Contacto': item.proveedor.contacto,
-      'Tipo de Servicio': item.proveedor.tipo_servicio,
-      'Dirección': item.proveedor.direccion,
-      'Teléfono': item.proveedor.telefono,
-      'Email': item.proveedor.email
-    })));
-    
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Historial_Trimestre_${trimester}`);
-    XLSX.writeFile(workbook, `historial_mantenciones_trimestre_${trimester}.xlsx`);
   };
-
+  
   if (loading) return <p>Cargando historial...</p>;
   if (error) return <p>{error}</p>;
 
@@ -158,7 +190,7 @@ export default function HistorialMantenciones() {
                 </tr>
                 <tr>
                   <th>Insumo</th>
-                  <td>{item.nombre || 'No disponible'}</td>
+                  <td>{item.insumo.nombre || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Cantidad</th>
@@ -166,35 +198,35 @@ export default function HistorialMantenciones() {
                 </tr>
                 <tr>
                   <th>Costo Unitario</th>
-                  <td>${item.costo_unitario?.toFixed(2) || 'No disponible'}</td>
+                  <td>${item.insumo.costo_unitario?.toFixed(2) || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Costo Histórico</th>
-                  <td>${item.costo_historico?.toFixed(2) || 'No disponible'}</td>
+                  <td>${item.insumo.costo_historico?.toFixed(2) || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Proveedor</th>
-                  <td>{item.proveedor?.nombre || 'No disponible'}</td>
+                  <td>{item.insumo.proveedor?.nombre || 'No disponible'}</td>
                 </tr>
                 <tr>
-                  <th>Contacto</th>
-                  <td>{item.proveedor?.contacto || 'No disponible'}</td>
+                  <th>Nombre</th>
+                  <td>{item.insumo.proveedor?.contacto || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Tipo de Servicio</th>
-                  <td>{item.proveedor?.tipo_servicio || 'No disponible'}</td>
+                  <td>{item.insumo.proveedor?.tipo_servicio || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Dirección</th>
-                  <td>{item.proveedor?.direccion || 'No disponible'}</td>
+                  <td>{item.insumo.proveedor?.direccion || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Teléfono</th>
-                  <td>{item.proveedor?.telefono || 'No disponible'}</td>
+                  <td>{item.insumo.proveedor?.telefono || 'No disponible'}</td>
                 </tr>
                 <tr>
                   <th>Email</th>
-                  <td>{item.proveedor?.email || 'No disponible'}</td>
+                  <td>{item.insumo.proveedor?.email || 'No disponible'}</td>
                 </tr>
               </tbody>
             </table>
